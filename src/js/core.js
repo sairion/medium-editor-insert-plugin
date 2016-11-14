@@ -518,8 +518,9 @@
             return;
         }
 
-        this.$el.find('.medium-insert-buttons-addons').fadeToggle();
-        this.$el.find('.medium-insert-buttons-show').toggleClass('medium-insert-buttons-rotate');
+        //this.$el.find('.medium-insert-buttons-addons').fadeToggle(); // #ARTICLE_MOD
+        //this.$el.find('.medium-insert-buttons-show').toggleClass('medium-insert-buttons-rotate'); // #ARTICLE_MOD
+        this.$el.find('.add_option_tools').toggle(); // #ARTICLE_MOD
     };
 
     /**

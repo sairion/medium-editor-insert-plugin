@@ -195,6 +195,7 @@
      */
 
     Images.prototype.add = function () {
+        console.debug('add')
         var that = this,
             $file = $(this.templates['src/js/templates/images-fileupload.hbs']()),
             fileUploadOptions = {
@@ -236,6 +237,7 @@
      */
 
     Images.prototype.uploadAdd = function (e, data) {
+        console.debug('uploadAdd')
         var $place = this.$el.find('.medium-insert-active'),
             that = this,
             uploadErrors = [],
@@ -359,6 +361,7 @@
      */
 
     Images.prototype.uploadDone = function (e, data) {
+        console.debug('uploadDone');
         $.proxy(this, 'showImage', data.result.files[0].url, data)();
 
         this.core.clean();
@@ -373,6 +376,8 @@
      */
 
     Images.prototype.showImage = function (img, data) {
+        window.__SECRET__ = window.__SECRET__ || {}; // #ARTICLE_MOD
+        window.__SECRET__.data = data; // #ARTICLE_MOD // TODO: fix data sharing somehow
         var $place = this.$el.find('.medium-insert-active'),
             domImage,
             that;
@@ -400,6 +405,12 @@
                 img: img,
                 progress: this.options.preview
             })).appendTo($place);
+            var $img = data.context.find('img');
+
+            data.__image__ = {
+                width: $img.width(), 
+                height: $img.height()
+            }; // #ARTICLE_MOD
 
             $place.find('br').remove();
 
@@ -546,7 +557,7 @@
 
             if (images.length) {
                 for (i = 0; i < images.length; i++) {
-                    this.deleteFile(images[i].attr('src'));
+                    //this.deleteFile(images[i].attr('src')); // #ARTICLE_MOD
 
                     $parent = images[i].closest('.medium-insert-images');
                     images[i].closest('figure').remove();
@@ -598,6 +609,7 @@
      */
 
     Images.prototype.addToolbar = function () {
+        console.debug('addToolbar')
         var $image = this.$el.find('.medium-insert-image-active'),
             $p = $image.closest('.medium-insert-images'),
             active = false,
@@ -638,6 +650,7 @@
     };
 
     Images.prototype.repositionToolbars = function () {
+        console.debug('repositionToolbars')
         var $toolbar = $('.medium-insert-images-toolbar'),
             $toolbar2 = $('.medium-insert-images-toolbar2'),
             $image = this.$el.find('.medium-insert-image-active'),
@@ -693,6 +706,7 @@
      */
 
     Images.prototype.toolbarAction = function (e) {
+        console.debug('toolbarAction')
         var that = this,
             $button, $li, $ul, $lis, $p;
 

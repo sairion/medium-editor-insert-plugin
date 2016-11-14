@@ -58,6 +58,7 @@
     "time-grunt": "^1.1.0"
   },
   "scripts": {
-    "test": "grunt test --verbose"
+    "test": "grunt test --verbose",
+    "go": "grunt handlebars && grunt concat && cp dist/js/medium-editor-insert-plugin.js /Users/jaeholee/fancy/_static/modules/ui/article/MediumEditorInsertPluginFancy.js"
   }
 }

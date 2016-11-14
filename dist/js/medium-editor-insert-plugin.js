@@ -7,30 +7,26 @@
  * Released under the MIT license
  */
 
+var define = false;
 (function (factory) {
+    var boundFactory = factory.bind(window);  // Due to strict mode, manually bind `thisContext` to window.
     if (typeof define === 'function' && define.amd) {
-        define(['jquery', 'handlebars/runtime', 'medium-editor', 'blueimp-file-upload', 'jquery-sortable'], factory);
+        define(['jquery', 'handlebars/runtime', 'medium-editor', 'blueimp-file-upload', 'jquery-sortable'], boundFactory);
     } else if (typeof module === 'object' && module.exports) {
         module.exports = function (jQuery) {
             if (typeof window === 'undefined') {
                 throw new Error("medium-editor-insert-plugin runs only in a browser.")
             }
-
-            if (jQuery === undefined) {
-                jQuery = require('jquery');
-            }
-            window.jQuery = jQuery;
-
-            Handlebars = require('handlebars/runtime');
-            MediumEditor = require('medium-editor');
+            window.Handlebars = require('handlebars/runtime');
+            window.MediumEditor = require('medium-editor');
             require('jquery-sortable');
             require('blueimp-file-upload');
 
-            factory(jQuery, Handlebars, MediumEditor);
+            boundFactory(jQuery, Handlebars, MediumEditor);
             return jQuery;
         };
     } else {
-        factory(jQuery, Handlebars, MediumEditor);
+        boundFactory(jQuery, Handlebars, MediumEditor);
     }
 }(function ($, Handlebars, MediumEditor) {
 
@@ -48,9 +44,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handleb
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "<div class=\"medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <button class=\"medium-insert-buttons-show\" type=\"button\"><span>+</span></button>\n    <ul class=\"medium-insert-buttons-addons\" style=\"display: none\">\n"
+  return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <button class=\"medium-insert-buttons-show\" type=\"button\"><span>+</span></button>\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a>Insert Gallery</a>\n    </small>\n    <!--<ul class=\"medium-insert-buttons-addons\" style=\"display: none\">\n"
     + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.addons : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "    </ul>\n</div>\n";
+    + "    </ul>-->\n</div>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-caption.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -92,9 +88,11 @@ this["MediumInsert"]["Templates"]["src/js/templates/embeds-toolbar.hbs"] = Handl
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {};
 
-  return ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.styles : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+  return "<div class=\"editable_tools\">\n    <a class=\"edit_full\">Full</a>\n    <a class=\"edit_normal\">Normal</a>\n    <a class=\"edit_with_quote selected\">With Quote</a>\n</div>\n\n<!--\n"
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.styles : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.actions : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.actions : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "-->\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/embeds-wrapper.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -683,8 +681,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
             return;
         }
 
-        this.$el.find('.medium-insert-buttons-addons').fadeToggle();
-        this.$el.find('.medium-insert-buttons-show').toggleClass('medium-insert-buttons-rotate');
+        //this.$el.find('.medium-insert-buttons-addons').fadeToggle(); // #ARTICLE_MOD
+        //this.$el.find('.medium-insert-buttons-show').toggleClass('medium-insert-buttons-rotate'); // #ARTICLE_MOD
+        this.$el.find('.add_option_tools').toggle(); // #ARTICLE_MOD
     };
 
     /**
@@ -1646,6 +1645,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
                 acceptFileTypesError: 'This file is not in a supported format: ',
                 maxFileSizeError: 'This file is too big: '
             }
+            // uploadError: function($el, data) {}
             // uploadCompleted: function ($el, data) {}
         };
 
@@ -1767,6 +1767,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      */
 
     Images.prototype.add = function () {
+        console.debug('add')
         var that = this,
             $file = $(this.templates['src/js/templates/images-fileupload.hbs']()),
             fileUploadOptions = {
@@ -1808,6 +1809,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      */
 
     Images.prototype.uploadAdd = function (e, data) {
+        console.debug('uploadAdd')
         var $place = this.$el.find('.medium-insert-active'),
             that = this,
             uploadErrors = [],
@@ -1822,7 +1824,14 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
             uploadErrors.push(this.options.messages.maxFileSizeError + file.name);
         }
         if (uploadErrors.length > 0) {
+            if (this.options.uploadFailed && typeof this.options.uploadFailed === "function") {
+                this.options.uploadFailed(uploadErrors, data);
+
+                return;
+            }
+
             alert(uploadErrors.join("\n"));
+
             return;
         }
 
@@ -1924,6 +1933,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      */
 
     Images.prototype.uploadDone = function (e, data) {
+        console.debug('uploadDone');
         $.proxy(this, 'showImage', data.result.files[0].url, data)();
 
         this.core.clean();
@@ -1938,6 +1948,8 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      */
 
     Images.prototype.showImage = function (img, data) {
+        window.__SECRET__ = window.__SECRET__ || {}; // #ARTICLE_MOD
+        window.__SECRET__.data = data; // #ARTICLE_MOD // TODO: fix data sharing somehow
         var $place = this.$el.find('.medium-insert-active'),
             domImage,
             that;
@@ -1965,6 +1977,12 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
                 img: img,
                 progress: this.options.preview
             })).appendTo($place);
+            var $img = data.context.find('img');
+
+            data.__image__ = {
+                width: $img.width(), 
+                height: $img.height()
+            }; // #ARTICLE_MOD
 
             $place.find('br').remove();
 
@@ -2111,7 +2129,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 
             if (images.length) {
                 for (i = 0; i < images.length; i++) {
-                    this.deleteFile(images[i].attr('src'));
+                    //this.deleteFile(images[i].attr('src')); // #ARTICLE_MOD
 
                     $parent = images[i].closest('.medium-insert-images');
                     images[i].closest('figure').remove();
@@ -2163,6 +2181,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      */
 
     Images.prototype.addToolbar = function () {
+        console.debug('addToolbar')
         var $image = this.$el.find('.medium-insert-image-active'),
             $p = $image.closest('.medium-insert-images'),
             active = false,
@@ -2203,6 +2222,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
     };
 
     Images.prototype.repositionToolbars = function () {
+        console.debug('repositionToolbars')
         var $toolbar = $('.medium-insert-images-toolbar'),
             $toolbar2 = $('.medium-insert-images-toolbar2'),
             $image = this.$el.find('.medium-insert-image-active'),
@@ -2258,6 +2278,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      */
 
     Images.prototype.toolbarAction = function (e) {
+        console.debug('toolbarAction')
         var that = this,
             $button, $li, $ul, $lis, $p;
 
