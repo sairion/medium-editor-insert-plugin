@@ -1,5 +1,22 @@
 /*global MediumEditor*/
 
+// #ARTICLE_MOD
+var ImageModes = {
+    Full: 'Full',
+    Normal: 'Normal',
+    Quoted: 'Quoted'
+};
+var ImageModesEditClasses = {
+    Full: 'edit_full',
+    Normal: 'edit_normal',
+    Quoted: 'edit_with_quote'
+};
+var ImageModesClasses = {
+    Full: 'mode-full',
+    Normal: 'mode-normal',
+    Quoted: 'mode-quoted',
+};
+
 ; (function ($, window, document, Util, undefined) {
 
     'use strict';
@@ -91,6 +108,8 @@
     function Images(el, options) {
         this.el = el;
         this.$el = $(el);
+        this.mode = this.$el.attr('data-mode') || ImageModes.Normal; // #ARTICLE_MOD
+
         this.$currentImage = null;
         this.templates = window.MediumInsert.Templates;
         this.core = this.$el.data('plugin_' + pluginName);
@@ -131,6 +150,53 @@
         this.sorting();
     };
 
+    Images.prototype.handleModeChange = function (nextMode) {
+        var prevMode = this.mode;
+        this.mode = nextMode;
+        if (prevMode === nextMode) { // no change in mode
+            return;
+        }
+
+        var $fig = this.$currentImage.closest('figure');
+        $fig.attr('class', '');
+        $fig.addClass(ImageModesClasses[nextMode]);
+        var $caption = $fig.find('figcaption');
+        var tempCaption = '';
+        if ($caption.text().trim() !== '') {
+            tempCaption = $caption.text();
+        } else if (prevMode === ImageModes.Quoted) {
+            var quote = $fig.find('textarea').val().trim();
+            if (quote) {
+                tempCaption = quote;
+            }
+        }
+
+        //this.core.removeCaptions(); // DIDNT WORK
+        if (tempCaption === '') {
+            $fig.find('figcaption').remove();
+        }
+
+        // Process figure when quote mode is related
+        if (nextMode === ImageModes.Quoted) {
+            $fig.find('figcaption').remove();
+            $fig.find('img')
+                .wrap('<p />')
+                .wrap('<span class="image" />')
+            $fig
+                .append('<p><textarea placeholder="“Start typing or paste article text...”" /></p>')
+            if (tempCaption) {
+                $fig.find('textarea').val(tempCaption);
+            }
+        } else if (prevMode === ImageModes.Quoted) {
+            var $img = $fig.find('img');
+            $fig.html('');
+            $fig.append($img);
+            if (tempCaption) {
+                this.core.addCaption($fig, this.options.captionPlaceholder, tempCaption);
+            }
+        }
+    }
+
     /**
      * Event listeners
      *
@@ -141,9 +207,18 @@
         $(document)
             .on('click', $.proxy(this, 'unselectImage'))
             .on('keydown', $.proxy(this, 'removeImage'))
-            .on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
-            .on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
-
+            .on('click', '.medium-insert-images-toolbar .edit_full', (function(event) {
+                this.handleModeChange(ImageModes.Full);
+            }).bind(this))
+            .on('click', '.medium-insert-images-toolbar .edit_normal', (function(event) {
+                this.handleModeChange(ImageModes.Normal);
+            }).bind(this))
+            .on('click', '.medium-insert-images-toolbar .edit_with_quote', (function(event) {
+                this.handleModeChange(ImageModes.Quoted);
+            }).bind(this));
+            //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
+            //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
+            //.on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
         this.$el
             .on('click', '.medium-insert-images img', $.proxy(this, 'selectImage'));
 
@@ -361,8 +436,7 @@
      */
 
     Images.prototype.uploadDone = function (e, data) {
-        console.debug('uploadDone');
-        $.proxy(this, 'showImage', data.result.files[0].url, data)();
+        $.proxy(this, 'showImage', data.result.image_url, data, { uiid: data.result.id })(); // #ARTICLE_MOD
 
         this.core.clean();
         this.sorting();
@@ -375,7 +449,7 @@
      * @returns {void}
      */
 
-    Images.prototype.showImage = function (img, data) {
+    Images.prototype.showImage = function (img, data, additionals) { // #ARTICLE_MOD
         window.__SECRET__ = window.__SECRET__ || {}; // #ARTICLE_MOD
         window.__SECRET__.data = data; // #ARTICLE_MOD // TODO: fix data sharing somehow
         var $place = this.$el.find('.medium-insert-active'),
@@ -405,12 +479,11 @@
                 img: img,
                 progress: this.options.preview
             })).appendTo($place);
-            var $img = data.context.find('img');
 
-            data.__image__ = {
-                width: $img.width(), 
-                height: $img.height()
-            }; // #ARTICLE_MOD
+            var $img = data.context.find('img');
+            if (additionals && additionals.uiid) {
+                $img.attr('data-uiid', additionals.uiid); // #ARTICLE_MOD - Add ui.id for future use
+            }
 
             $place.find('br').remove();
 
@@ -473,7 +546,7 @@
             setTimeout(function () {
                 that.addToolbar();
 
-                if (that.options.captions) {
+                if (that.options.captions && that.mode !== ImageModes.Quoted) {
                     that.core.addCaption($image.closest('figure'), that.options.captionPlaceholder);
                 }
             }, 50);
@@ -504,7 +577,9 @@
         if ($el.is('.medium-insert-caption-placeholder')) {
             this.core.removeCaptionPlaceholder($image.closest('figure'));
         } else if ($el.is('figcaption') === false) {
-            this.core.removeCaptions();
+            if (this.$el.closest('figure').find('figcaption').text().trim()) {
+                this.core.removeCaptions();
+            }
         }
         this.$currentImage = null;
     };
@@ -617,10 +692,15 @@
             toolbarContainer = mediumEditor.options.elementsContainer || 'body',
             $toolbar, $toolbar2;
 
-        $(toolbarContainer).append(this.templates['src/js/templates/images-toolbar.hbs']({
+        var $tpl = this.templates['src/js/templates/images-toolbar.hbs']({
             styles: this.options.styles,
-            actions: this.options.actions
-        }).trim());
+            actions: this.options.actions,
+        }).trim();
+        $(toolbarContainer).append(
+            $($tpl)
+                .find('.' + ImageModesEditClasses[this.mode]).addClass('selected')
+                .end()
+        );
 
         $toolbar = $('.medium-insert-images-toolbar');
         $toolbar2 = $('.medium-insert-images-toolbar2');

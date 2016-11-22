@@ -44,7 +44,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handleb
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <button class=\"medium-insert-buttons-show\" type=\"button\"><span>+</span></button>\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a>Insert Gallery</a>\n    </small>\n    <!--<ul class=\"medium-insert-buttons-addons\" style=\"display: none\">\n"
+  return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <button class=\"medium-insert-buttons-show\" type=\"button\"><span>+</span></button>\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a class=\"gallery-insert-action\">Insert Gallery</a>\n    </small>\n    <!--<ul class=\"medium-insert-buttons-addons\" style=\"display: none\">\n"
     + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.addons : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "    </ul>-->\n</div>\n";
 },"useData":true});
@@ -88,11 +88,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/embeds-toolbar.hbs"] = Handl
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {};
 
-  return "<div class=\"editable_tools\">\n    <a class=\"edit_full\">Full</a>\n    <a class=\"edit_normal\">Normal</a>\n    <a class=\"edit_with_quote selected\">With Quote</a>\n</div>\n\n<!--\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.styles : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+  return ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.styles : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.actions : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "-->\n";
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.actions : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/embeds-wrapper.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -123,43 +121,8 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-progressbar.hbs"] = H
     return "<progress min=\"0\" max=\"100\" value=\"0\">0</progress>";
 },"useData":true});
 
-this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.label : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
-},"2":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function";
-
-  return "                <li>\n                    <button class=\"medium-editor-action\" data-action=\""
-    + container.escapeExpression(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"key","hash":{},"data":data}) : helper)))
-    + "\">"
-    + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
-    + "</button>\n                </li>\n";
-},"4":function(container,depth0,helpers,partials,data) {
-    var stack1;
-
-  return "	<div class=\"medium-insert-images-toolbar2 medium-editor-toolbar medium-editor-toolbar-active\">\n		<ul class=\"medium-editor-toolbar-actions clearfix\">\n"
-    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.actions : depth0),{"name":"each","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "    	</ul>\n    </div>\n";
-},"5":function(container,depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.label : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
-},"6":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function";
-
-  return "        	        <li>\n        	            <button class=\"medium-editor-action\" data-action=\""
-    + container.escapeExpression(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"key","hash":{},"data":data}) : helper)))
-    + "\">"
-    + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
-    + "</button>\n        	        </li>\n";
-},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, alias1=depth0 != null ? depth0 : {};
-
-  return "<div class=\"medium-insert-images-toolbar medium-editor-toolbar medium-toolbar-arrow-under medium-editor-toolbar-active\">\n    <ul class=\"medium-editor-toolbar-actions clearfix\">\n"
-    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.styles : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "    </ul>\n</div>\n\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.actions : depth0),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<div class=\"medium-insert-images-toolbar medium-editor-toolbar medium-toolbar-arrow-under medium-editor-toolbar-active\">\n    <div class=\"editable_tools\">\n        <a class=\"edit_full\">Full</a>\n        <a class=\"edit_normal\">Normal</a>\n        <a class=\"edit_with_quote\">With Quote</a>\n    </div>\n</div>\n";
 },"useData":true});
 ;(function ($, window, document, undefined) {
 
@@ -276,6 +239,22 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
             .on('selectstart mousedown', '.medium-insert, .medium-insert-buttons', $.proxy(this, 'disableSelection'))
             .on('click', '.medium-insert-buttons-show', $.proxy(this, 'toggleAddons'))
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
+            .on('click', '.gallery-insert-action', (function(){ // #ARTICLE_MOD
+                var $place = this.$el.find('.medium-insert-active');
+                // From images.js 
+                if ($place.is('p')) {
+                    $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
+                    $place = this.$el.find('.medium-insert-active');
+                    if ($place.next().is('p')) {
+                        this.moveCaret($place.next());
+                    } else {
+                        $place.after('<p><br></p>'); // add empty paragraph so we can move the caret to the next line.
+                        this.moveCaret($place.next());
+                    }
+                }
+                $place.append(window.gallery.container);
+                $(window.gallery.container).show();
+            }).bind(this))
             .on('paste', '.medium-insert-caption-placeholder', function (e) {
                 $.proxy(that, 'removeCaptionPlaceholder')($(e.target));
             });
@@ -748,13 +727,19 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      * @return {void}
      */
 
-    Core.prototype.addCaption = function ($el, placeholder) {
+    Core.prototype.addCaption = function ($el, placeholder, text) {
         var $caption = $el.find('figcaption');
 
         if ($caption.length === 0) {
-            $el.append(this.templates['src/js/templates/core-caption.hbs']({
+            var $newCaption = $(this.templates['src/js/templates/core-caption.hbs']({
                 placeholder: placeholder
             }));
+            if (text) {
+                $newCaption.removeAttr('data-placeholder');
+                $newCaption.attr('class', '');
+                $newCaption.text(text);
+            }
+            $el.append($newCaption);
         }
     };
 
@@ -1572,6 +1557,23 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 
 /*global MediumEditor*/
 
+// #ARTICLE_MOD
+var ImageModes = {
+    Full: 'Full',
+    Normal: 'Normal',
+    Quoted: 'Quoted'
+};
+var ImageModesEditClasses = {
+    Full: 'edit_full',
+    Normal: 'edit_normal',
+    Quoted: 'edit_with_quote'
+};
+var ImageModesClasses = {
+    Full: 'mode-full',
+    Normal: 'mode-normal',
+    Quoted: 'mode-quoted',
+};
+
 ; (function ($, window, document, Util, undefined) {
 
     'use strict';
@@ -1661,6 +1663,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      */
 
     function Images(el, options) {
+        this.mode = ImageModes.Normal; // #ARTICLE_MOD // TODO: use data-mode to determine mode 
         this.el = el;
         this.$el = $(el);
         this.$currentImage = null;
@@ -1703,6 +1706,53 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
         this.sorting();
     };
 
+    Images.prototype.handleModeChange = function (nextMode) {
+        var prevMode = this.mode;
+        this.mode = nextMode;
+        if (prevMode === nextMode) { // no change in mode
+            return;
+        }
+
+        var $fig = this.$currentImage.closest('figure');
+        $fig.attr('class', '');
+        $fig.addClass(ImageModesClasses[nextMode]);
+        var $caption = $fig.find('figcaption');
+        var tempCaption = '';
+        if ($caption.text().trim() !== '') {
+            tempCaption = $caption.text();
+        } else if (prevMode === ImageModes.Quoted) {
+            var quote = $fig.find('textarea').val().trim();
+            if (quote) {
+                tempCaption = quote;
+            }
+        }
+
+        //this.core.removeCaptions(); // DIDNT WORK
+        if (tempCaption === '') {
+            $fig.find('figcaption').remove();
+        }
+
+        // Process figure when quote mode is related
+        if (nextMode === ImageModes.Quoted) {
+            $fig.find('figcaption').remove();
+            $fig.find('img')
+                .wrap('<p />')
+                .wrap('<span class="image" />')
+            $fig
+                .append('<p><textarea placeholder="“Start typing or paste article text...”" /></p>')
+            if (tempCaption) {
+                $fig.find('textarea').val(tempCaption);
+            }
+        } else if (prevMode === ImageModes.Quoted) {
+            var $img = $fig.find('img');
+            $fig.html('');
+            $fig.append($img);
+            if (tempCaption) {
+                this.core.addCaption($fig, this.options.captionPlaceholder, tempCaption);
+            }
+        }
+    }
+
     /**
      * Event listeners
      *
@@ -1713,9 +1763,18 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
         $(document)
             .on('click', $.proxy(this, 'unselectImage'))
             .on('keydown', $.proxy(this, 'removeImage'))
-            .on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
-            .on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
-
+            .on('click', '.medium-insert-images-toolbar .edit_full', (function(event) {
+                this.handleModeChange(ImageModes.Full);
+            }).bind(this))
+            .on('click', '.medium-insert-images-toolbar .edit_normal', (function(event) {
+                this.handleModeChange(ImageModes.Normal);
+            }).bind(this))
+            .on('click', '.medium-insert-images-toolbar .edit_with_quote', (function(event) {
+                this.handleModeChange(ImageModes.Quoted);
+            }).bind(this));
+            //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
+            //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
+            //.on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
         this.$el
             .on('click', '.medium-insert-images img', $.proxy(this, 'selectImage'));
 
@@ -1933,8 +1992,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      */
 
     Images.prototype.uploadDone = function (e, data) {
-        console.debug('uploadDone');
-        $.proxy(this, 'showImage', data.result.files[0].url, data)();
+        $.proxy(this, 'showImage', data.result.image_url, data, { uiid: data.result.id })(); // #ARTICLE_MOD
 
         this.core.clean();
         this.sorting();
@@ -1947,7 +2005,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
      * @returns {void}
      */
 
-    Images.prototype.showImage = function (img, data) {
+    Images.prototype.showImage = function (img, data, additionals) { // #ARTICLE_MOD
         window.__SECRET__ = window.__SECRET__ || {}; // #ARTICLE_MOD
         window.__SECRET__.data = data; // #ARTICLE_MOD // TODO: fix data sharing somehow
         var $place = this.$el.find('.medium-insert-active'),
@@ -1977,12 +2035,11 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
                 img: img,
                 progress: this.options.preview
             })).appendTo($place);
-            var $img = data.context.find('img');
 
-            data.__image__ = {
-                width: $img.width(), 
-                height: $img.height()
-            }; // #ARTICLE_MOD
+            var $img = data.context.find('img');
+            if (additionals && additionals.uiid) {
+                $img.attr('data-uiid', additionals.uiid); // #ARTICLE_MOD - Add ui.id for future use
+            }
 
             $place.find('br').remove();
 
@@ -2045,7 +2102,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
             setTimeout(function () {
                 that.addToolbar();
 
-                if (that.options.captions) {
+                if (that.options.captions && that.mode !== ImageModes.Quoted) {
                     that.core.addCaption($image.closest('figure'), that.options.captionPlaceholder);
                 }
             }, 50);
@@ -2076,7 +2133,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
         if ($el.is('.medium-insert-caption-placeholder')) {
             this.core.removeCaptionPlaceholder($image.closest('figure'));
         } else if ($el.is('figcaption') === false) {
-            this.core.removeCaptions();
+            if (this.$el.closest('figure').find('figcaption').text().trim()) {
+                this.core.removeCaptions();
+            }
         }
         this.$currentImage = null;
     };
@@ -2189,10 +2248,15 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
             toolbarContainer = mediumEditor.options.elementsContainer || 'body',
             $toolbar, $toolbar2;
 
-        $(toolbarContainer).append(this.templates['src/js/templates/images-toolbar.hbs']({
+        var $tpl = this.templates['src/js/templates/images-toolbar.hbs']({
             styles: this.options.styles,
-            actions: this.options.actions
-        }).trim());
+            actions: this.options.actions,
+        }).trim();
+        $(toolbarContainer).append(
+            $($tpl)
+                .find('.' + ImageModesEditClasses[this.mode]).addClass('selected')
+                .end()
+        );
 
         $toolbar = $('.medium-insert-images-toolbar');
         $toolbar2 = $('.medium-insert-images-toolbar2');

@@ -113,6 +113,22 @@
             .on('selectstart mousedown', '.medium-insert, .medium-insert-buttons', $.proxy(this, 'disableSelection'))
             .on('click', '.medium-insert-buttons-show', $.proxy(this, 'toggleAddons'))
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
+            .on('click', '.gallery-insert-action', (function(){ // #ARTICLE_MOD
+                var $place = this.$el.find('.medium-insert-active');
+                // From images.js 
+                if ($place.is('p')) {
+                    $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
+                    $place = this.$el.find('.medium-insert-active');
+                    if ($place.next().is('p')) {
+                        this.moveCaret($place.next());
+                    } else {
+                        $place.after('<p><br></p>'); // add empty paragraph so we can move the caret to the next line.
+                        this.moveCaret($place.next());
+                    }
+                }
+                $place.append(window.gallery.container);
+                $(window.gallery.container).show();
+            }).bind(this))
             .on('paste', '.medium-insert-caption-placeholder', function (e) {
                 $.proxy(that, 'removeCaptionPlaceholder')($(e.target));
             });
@@ -585,13 +601,19 @@
      * @return {void}
      */
 
-    Core.prototype.addCaption = function ($el, placeholder) {
+    Core.prototype.addCaption = function ($el, placeholder, text) {
         var $caption = $el.find('figcaption');
 
         if ($caption.length === 0) {
-            $el.append(this.templates['src/js/templates/core-caption.hbs']({
+            var $newCaption = $(this.templates['src/js/templates/core-caption.hbs']({
                 placeholder: placeholder
             }));
+            if (text) {
+                $newCaption.removeAttr('data-placeholder');
+                $newCaption.attr('class', '');
+                $newCaption.text(text);
+            }
+            $el.append($newCaption);
         }
     };
 
