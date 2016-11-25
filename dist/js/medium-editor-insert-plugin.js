@@ -33,20 +33,8 @@ var define = false;
 this["MediumInsert"] = this["MediumInsert"] || {};
 this["MediumInsert"]["Templates"] = this["MediumInsert"]["Templates"] || {};
 
-this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function";
-
-  return "            <li><button data-addon=\""
-    + container.escapeExpression(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"key","hash":{},"data":data}) : helper)))
-    + "\" data-action=\"add\" class=\"medium-insert-action\" type=\"button\">"
-    + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
-    + "</button></li>\n";
-},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1;
-
-  return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <button class=\"medium-insert-buttons-show\" type=\"button\"><span>+</span></button>\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a class=\"gallery-insert-action\">Insert Gallery</a>\n    </small>\n    <!--<ul class=\"medium-insert-buttons-addons\" style=\"display: none\">\n"
-    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.addons : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "    </ul>-->\n</div>\n";
+this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <button class=\"medium-insert-buttons-show\" type=\"button\"><span>+</span></button>\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a class=\"gallery-insert-action\">Insert Gallery</a>\n    </small>\n</div>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-caption.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1663,9 +1651,11 @@ var ImageModesClasses = {
      */
 
     function Images(el, options) {
-        this.mode = ImageModes.Normal; // #ARTICLE_MOD // TODO: use data-mode to determine mode 
         this.el = el;
         this.$el = $(el);
+
+        // this.mode = this.$el.attr('data-mode') || ImageModes.Normal; // #ARTICLE_MOD
+
         this.$currentImage = null;
         this.templates = window.MediumInsert.Templates;
         this.core = this.$el.data('plugin_' + pluginName);
@@ -1695,6 +1685,10 @@ var ImageModesClasses = {
      * @return {void}
      */
 
+    function getImageMode($image) {
+        return $image.closest('figure').attr('data-mode');
+    }
+
     Images.prototype.init = function () {
         var $images = this.$el.find('.medium-insert-images');
 
@@ -1706,16 +1700,11 @@ var ImageModesClasses = {
         this.sorting();
     };
 
-    Images.prototype.handleModeChange = function (nextMode) {
-        var prevMode = this.mode;
-        this.mode = nextMode;
-        if (prevMode === nextMode) { // no change in mode
-            return;
-        }
-
-        var $fig = this.$currentImage.closest('figure');
+    function changeMode($fig, prevMode, nextMode, tempCaptionCallback) {
+        debugger;
         $fig.attr('class', '');
         $fig.addClass(ImageModesClasses[nextMode]);
+        $fig.attr('data-mode', nextMode);
         var $caption = $fig.find('figcaption');
         var tempCaption = '';
         if ($caption.text().trim() !== '') {
@@ -1748,10 +1737,22 @@ var ImageModesClasses = {
             $fig.html('');
             $fig.append($img);
             if (tempCaption) {
-                this.core.addCaption($fig, this.options.captionPlaceholder, tempCaption);
+                tempCaptionCallback && tempCaptionCallback(tempCaption);
             }
         }
     }
+    window.ReactMediumEditor__changeMode = changeMode;
+
+    Images.prototype.handleModeChange = function (nextMode) {
+        var prevMode = getImageMode(this.$currentImage);
+        if (prevMode === nextMode) { // no change in mode
+            return;
+        }
+        var $fig = this.$currentImage.closest('figure');
+        changeMode($fig, prevMode, nextMode, (function(tempCaption) {
+            this.core.addCaption($fig, this.options.captionPlaceholder, tempCaption);
+        }).bind(this));      
+    };
 
     /**
      * Event listeners
@@ -1826,7 +1827,6 @@ var ImageModesClasses = {
      */
 
     Images.prototype.add = function () {
-        console.debug('add')
         var that = this,
             $file = $(this.templates['src/js/templates/images-fileupload.hbs']()),
             fileUploadOptions = {
@@ -1868,7 +1868,6 @@ var ImageModesClasses = {
      */
 
     Images.prototype.uploadAdd = function (e, data) {
-        console.debug('uploadAdd')
         var $place = this.$el.find('.medium-insert-active'),
             that = this,
             uploadErrors = [],
@@ -2102,7 +2101,7 @@ var ImageModesClasses = {
             setTimeout(function () {
                 that.addToolbar();
 
-                if (that.options.captions && that.mode !== ImageModes.Quoted) {
+                if (that.options.captions && getImageMode(that.$currentImage) !== ImageModes.Quoted) {
                     that.core.addCaption($image.closest('figure'), that.options.captionPlaceholder);
                 }
             }, 50);
@@ -2240,7 +2239,6 @@ var ImageModesClasses = {
      */
 
     Images.prototype.addToolbar = function () {
-        console.debug('addToolbar')
         var $image = this.$el.find('.medium-insert-image-active'),
             $p = $image.closest('.medium-insert-images'),
             active = false,
@@ -2252,9 +2250,10 @@ var ImageModesClasses = {
             styles: this.options.styles,
             actions: this.options.actions,
         }).trim();
+
         $(toolbarContainer).append(
             $($tpl)
-                .find('.' + ImageModesEditClasses[this.mode]).addClass('selected')
+                .find('.' + ImageModesEditClasses[getImageMode($image)]).addClass('selected')
                 .end()
         );
 
@@ -2286,7 +2285,6 @@ var ImageModesClasses = {
     };
 
     Images.prototype.repositionToolbars = function () {
-        console.debug('repositionToolbars')
         var $toolbar = $('.medium-insert-images-toolbar'),
             $toolbar2 = $('.medium-insert-images-toolbar2'),
             $image = this.$el.find('.medium-insert-image-active'),
@@ -2342,7 +2340,6 @@ var ImageModesClasses = {
      */
 
     Images.prototype.toolbarAction = function (e) {
-        console.debug('toolbarAction')
         var that = this,
             $button, $li, $ul, $lis, $p;
 
