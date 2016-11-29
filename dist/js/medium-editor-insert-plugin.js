@@ -1766,6 +1766,11 @@ var ImageModesClasses = {
             .on('click', '.medium-insert-images-toolbar .edit_full', (function(event) {
                 this.handleModeChange(ImageModes.Full);
             }).bind(this))
+            .on('click', '.medium-insert-images.medium-insert-active .remove', (function(event) {
+                if (this.$currentImage) {
+                    this.$currentImage.closest('figure').remove();
+                }
+            }).bind(this))
             .on('click', '.medium-insert-images-toolbar .edit_normal', (function(event) {
                 this.handleModeChange(ImageModes.Normal);
             }).bind(this))
@@ -2101,6 +2106,7 @@ var ImageModesClasses = {
 
             $image.addClass('medium-insert-image-active');
             $image.closest('.medium-insert-images').addClass('medium-insert-active');
+            $(`<a href="#" class="remove">Remove</a>`).insertAfter($image)
 
             setTimeout(function () {
                 that.addToolbar();
@@ -2131,6 +2137,7 @@ var ImageModesClasses = {
         }
 
         $image.removeClass('medium-insert-image-active');
+        $image.parent().find('.remove').remove();
         $('.medium-insert-images-toolbar, .medium-insert-images-toolbar2').remove();
 
         if ($el.is('.medium-insert-caption-placeholder')) {
