@@ -126,8 +126,7 @@
                         this.moveCaret($place.next());
                     }
                 }
-                $place.append(window.gallery.container);
-                $(window.gallery.container).show();
+                window.gallery.renderTo($place);
             }).bind(this))
             .on('paste', '.medium-insert-caption-placeholder', function (e) {
                 $.proxy(that, 'removeCaptionPlaceholder')($(e.target));

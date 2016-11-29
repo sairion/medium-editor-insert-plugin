@@ -240,8 +240,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
                         this.moveCaret($place.next());
                     }
                 }
-                $place.append(window.gallery.container);
-                $(window.gallery.container).show();
+                window.gallery.renderTo($place);
             }).bind(this))
             .on('paste', '.medium-insert-caption-placeholder', function (e) {
                 $.proxy(that, 'removeCaptionPlaceholder')($(e.target));
@@ -1701,7 +1700,7 @@ var ImageModesClasses = {
     };
 
     function changeMode($fig, prevMode, nextMode, tempCaptionCallback) {
-        debugger;
+        console.debug('changeMode');
         $fig.attr('class', '');
         $fig.addClass(ImageModesClasses[nextMode]);
         $fig.attr('data-mode', nextMode);
@@ -1730,7 +1729,7 @@ var ImageModesClasses = {
             $fig
                 .append('<p><textarea placeholder="“Start typing or paste article text...”" /></p>')
             if (tempCaption) {
-                $fig.find('textarea').val(tempCaption);
+                $fig.find('textarea').val(tempCaption).text(tempCaption);
             }
         } else if (prevMode === ImageModes.Quoted) {
             var $img = $fig.find('img');
@@ -1751,7 +1750,7 @@ var ImageModesClasses = {
         var $fig = this.$currentImage.closest('figure');
         changeMode($fig, prevMode, nextMode, (function(tempCaption) {
             this.core.addCaption($fig, this.options.captionPlaceholder, tempCaption);
-        }).bind(this));      
+        }).bind(this));
     };
 
     /**
@@ -1772,6 +1771,10 @@ var ImageModesClasses = {
             }).bind(this))
             .on('click', '.medium-insert-images-toolbar .edit_with_quote', (function(event) {
                 this.handleModeChange(ImageModes.Quoted);
+            }).bind(this))
+            .on('change', '.medium-insert-images figure textarea', (function(event) {
+                var $target = $(event.target);
+                $target.text($target.val());
             }).bind(this));
             //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
             //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
@@ -2034,6 +2037,7 @@ var ImageModesClasses = {
                 img: img,
                 progress: this.options.preview
             })).appendTo($place);
+            data.context.attr('data-mode', ImageModes.Normal);
 
             var $img = data.context.find('img');
             if (additionals && additionals.uiid) {
@@ -2239,12 +2243,16 @@ var ImageModesClasses = {
      */
 
     Images.prototype.addToolbar = function () {
+        console.debug('addToolbar')
         var $image = this.$el.find('.medium-insert-image-active'),
             $p = $image.closest('.medium-insert-images'),
             active = false,
             mediumEditor = this.core.getEditor(),
             toolbarContainer = mediumEditor.options.elementsContainer || 'body',
-            $toolbar, $toolbar2;
+            $toolbar,
+            $toolbar2;
+
+        var $fig = $image.closest('figure');
 
         var $tpl = this.templates['src/js/templates/images-toolbar.hbs']({
             styles: this.options.styles,
@@ -2253,7 +2261,7 @@ var ImageModesClasses = {
 
         $(toolbarContainer).append(
             $($tpl)
-                .find('.' + ImageModesEditClasses[getImageMode($image)]).addClass('selected')
+                .find('.' + ImageModesEditClasses[getImageMode($fig)]).addClass('selected')
                 .end()
         );
 
