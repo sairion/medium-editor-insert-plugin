@@ -219,13 +219,14 @@ var ImageModesClasses = {
         $(document)
             .on('click', $.proxy(this, 'unselectImage'))
             .on('keydown', $.proxy(this, 'removeImage'))
-            .on('click', '.medium-insert-images-toolbar .edit_full', (function(event) {
-                this.handleModeChange(ImageModes.Full);
-            }).bind(this))
             .on('click', '.medium-insert-images.medium-insert-active .remove', (function(event) {
                 if (this.$currentImage) {
                     this.$currentImage.closest('figure').remove();
                 }
+            }).bind(this))
+            // Toolbar buttons.
+            .on('click', '.medium-insert-images-toolbar .edit_full', (function(event) {
+                this.handleModeChange(ImageModes.Full);
             }).bind(this))
             .on('click', '.medium-insert-images-toolbar .edit_normal', (function(event) {
                 this.handleModeChange(ImageModes.Normal);
@@ -233,6 +234,7 @@ var ImageModesClasses = {
             .on('click', '.medium-insert-images-toolbar .edit_with_quote', (function(event) {
                 this.handleModeChange(ImageModes.Quoted);
             }).bind(this))
+            // For serialization
             .on('change', '.medium-insert-images figure textarea', (function(event) {
                 var $target = $(event.target);
                 $target.text($target.val());
@@ -241,7 +243,7 @@ var ImageModesClasses = {
             //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
             //.on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
         this.$el
-            .on('click', '.medium-insert-images img', $.proxy(this, 'selectImage'));
+            .on('mouseover', '.medium-insert-images img', $.proxy(this, 'selectImage'));
 
         $(window)
             .on('resize', $.proxy(this, 'autoRepositionToolbars'));
@@ -291,6 +293,7 @@ var ImageModesClasses = {
      */
 
     Images.prototype.add = function () {
+        console.debug('add');
         var that = this,
             $file = $(this.templates['src/js/templates/images-fileupload.hbs']()),
             fileUploadOptions = {
@@ -361,6 +364,12 @@ var ImageModesClasses = {
 
         // Replace paragraph with div, because figure elements can't be inside paragraph
         if ($place.is('p')) {
+            if ($place.text().length > 0) { // ARTICLE_MOD: move text before $place
+                var $cl = $place.clone();
+                $cl.insertBefore($place);
+                $cl.removeClass('medium-insert-active');
+                $place.html('');
+            }
             $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
             $place = this.$el.find('.medium-insert-active');
             if ($place.next().is('p')) {
@@ -549,6 +558,7 @@ var ImageModesClasses = {
      */
 
     Images.prototype.selectImage = function (e) {
+        console.debug('selectimage');
         var that = this,
             $image;
 
@@ -582,8 +592,16 @@ var ImageModesClasses = {
      */
 
     Images.prototype.unselectImage = function (e) {
+        if (this.$currentImage == null) {
+            return false;
+        }
+        console.debug('unselectImage')
         var $el = $(e.target),
             $image = this.$el.find('.medium-insert-image-active');
+
+        if ($el.is(this.$currentImage)) {
+            return false;
+        }
 
         if ($el.is('img') && $el.hasClass('medium-insert-image-active')) {
             $image.not($el).removeClass('medium-insert-image-active');

@@ -428,7 +428,7 @@
                 }
             });
 
-            if ($p.length && (($p.text().trim() === '' && !activeAddon) || activeAddon === 'images')) {
+            if ($p.length && ((/*$p.text().trim() === '' &&*/!activeAddon) || activeAddon === 'images')) {
                 $p.addClass('medium-insert-active');
 
                 if (activeAddon === 'images') {
@@ -495,27 +495,28 @@
             $lastCaption = $p.hasClass('medium-insert-images-grid') ? [] : $p.find('figure:last figcaption'),
             elementsContainer = this.getEditor() ? this.getEditor().options.elementsContainer : $('body').get(0),
             elementsContainerAbsolute = ['absolute', 'fixed'].indexOf(window.getComputedStyle(elementsContainer).getPropertyValue('position')) > -1,
-            position = {};
+            position = { left: 75 }; // fixed 75px
 
         if ($p.length) {
-            position.left = $p.position().left;
+            //position.left = $p.position().left;
             position.top = $p.position().top;
 
             if (activeAddon) {
-                position.left += $p.width() - $buttons.find('.medium-insert-buttons-show').width() - 10;
+                //position.left += $p.width() - $buttons.find('.medium-insert-buttons-show').width() - 10;
                 position.top += $p.height() - 20 + ($lastCaption.length ? -$lastCaption.height() - parseInt($lastCaption.css('margin-top'), 10) : 10);
             } else {
-                position.left += -parseInt($buttons.find('.medium-insert-buttons-addons').css('left'), 10) - parseInt($buttons.find('.medium-insert-buttons-addons button:first').css('margin-left'), 10);
+                //position.left += -parseInt($buttons.find('.medium-insert-buttons-addons').css('left'), 10) - parseInt($buttons.find('.medium-insert-buttons-addons button:first').css('margin-left'), 10);
                 position.top += parseInt($p.css('margin-top'), 10);
+                position.top += parseInt($p.css('padding-top'), 10);
             }
 
             if (elementsContainerAbsolute) {
                 position.top += elementsContainer.scrollTop;
             }
 
-            if (this.$el.hasClass('medium-editor-placeholder') === false && position.left < 0) {
-                position.left = $p.position().left;
-            }
+            //if (this.$el.hasClass('medium-editor-placeholder') === false && position.left < 0) {
+            //    position.left = $p.position().left;
+            //}
 
             $buttons.css(position);
         }

@@ -34,7 +34,7 @@ this["MediumInsert"] = this["MediumInsert"] || {};
 this["MediumInsert"]["Templates"] = this["MediumInsert"]["Templates"] || {};
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <button class=\"medium-insert-buttons-show\" type=\"button\"><span>+</span></button>\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a class=\"gallery-insert-action\">Insert Gallery</a>\n    </small>\n</div>\n";
+    return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a class=\"gallery-insert-action\">Insert Gallery</a>\n    </small>\n</div>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-caption.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -542,7 +542,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
                 }
             });
 
-            if ($p.length && (($p.text().trim() === '' && !activeAddon) || activeAddon === 'images')) {
+            if ($p.length && ((/*$p.text().trim() === '' &&*/!activeAddon) || activeAddon === 'images')) {
                 $p.addClass('medium-insert-active');
 
                 if (activeAddon === 'images') {
@@ -609,27 +609,28 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
             $lastCaption = $p.hasClass('medium-insert-images-grid') ? [] : $p.find('figure:last figcaption'),
             elementsContainer = this.getEditor() ? this.getEditor().options.elementsContainer : $('body').get(0),
             elementsContainerAbsolute = ['absolute', 'fixed'].indexOf(window.getComputedStyle(elementsContainer).getPropertyValue('position')) > -1,
-            position = {};
+            position = { left: 75 }; // fixed 75px
 
         if ($p.length) {
-            position.left = $p.position().left;
+            //position.left = $p.position().left;
             position.top = $p.position().top;
 
             if (activeAddon) {
-                position.left += $p.width() - $buttons.find('.medium-insert-buttons-show').width() - 10;
+                //position.left += $p.width() - $buttons.find('.medium-insert-buttons-show').width() - 10;
                 position.top += $p.height() - 20 + ($lastCaption.length ? -$lastCaption.height() - parseInt($lastCaption.css('margin-top'), 10) : 10);
             } else {
-                position.left += -parseInt($buttons.find('.medium-insert-buttons-addons').css('left'), 10) - parseInt($buttons.find('.medium-insert-buttons-addons button:first').css('margin-left'), 10);
+                //position.left += -parseInt($buttons.find('.medium-insert-buttons-addons').css('left'), 10) - parseInt($buttons.find('.medium-insert-buttons-addons button:first').css('margin-left'), 10);
                 position.top += parseInt($p.css('margin-top'), 10);
+                position.top += parseInt($p.css('padding-top'), 10);
             }
 
             if (elementsContainerAbsolute) {
                 position.top += elementsContainer.scrollTop;
             }
 
-            if (this.$el.hasClass('medium-editor-placeholder') === false && position.left < 0) {
-                position.left = $p.position().left;
-            }
+            //if (this.$el.hasClass('medium-editor-placeholder') === false && position.left < 0) {
+            //    position.left = $p.position().left;
+            //}
 
             $buttons.css(position);
         }
@@ -1763,13 +1764,14 @@ var ImageModesClasses = {
         $(document)
             .on('click', $.proxy(this, 'unselectImage'))
             .on('keydown', $.proxy(this, 'removeImage'))
-            .on('click', '.medium-insert-images-toolbar .edit_full', (function(event) {
-                this.handleModeChange(ImageModes.Full);
-            }).bind(this))
             .on('click', '.medium-insert-images.medium-insert-active .remove', (function(event) {
                 if (this.$currentImage) {
                     this.$currentImage.closest('figure').remove();
                 }
+            }).bind(this))
+            // Toolbar buttons.
+            .on('click', '.medium-insert-images-toolbar .edit_full', (function(event) {
+                this.handleModeChange(ImageModes.Full);
             }).bind(this))
             .on('click', '.medium-insert-images-toolbar .edit_normal', (function(event) {
                 this.handleModeChange(ImageModes.Normal);
@@ -1777,6 +1779,7 @@ var ImageModesClasses = {
             .on('click', '.medium-insert-images-toolbar .edit_with_quote', (function(event) {
                 this.handleModeChange(ImageModes.Quoted);
             }).bind(this))
+            // For serialization
             .on('change', '.medium-insert-images figure textarea', (function(event) {
                 var $target = $(event.target);
                 $target.text($target.val());
@@ -1785,7 +1788,7 @@ var ImageModesClasses = {
             //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
             //.on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
         this.$el
-            .on('click', '.medium-insert-images img', $.proxy(this, 'selectImage'));
+            .on('mouseover', '.medium-insert-images img', $.proxy(this, 'selectImage'));
 
         $(window)
             .on('resize', $.proxy(this, 'autoRepositionToolbars'));
@@ -1835,6 +1838,7 @@ var ImageModesClasses = {
      */
 
     Images.prototype.add = function () {
+        console.debug('add');
         var that = this,
             $file = $(this.templates['src/js/templates/images-fileupload.hbs']()),
             fileUploadOptions = {
@@ -1905,6 +1909,12 @@ var ImageModesClasses = {
 
         // Replace paragraph with div, because figure elements can't be inside paragraph
         if ($place.is('p')) {
+            if ($place.text().length > 0) { // ARTICLE_MOD: move text before $place
+                var $cl = $place.clone();
+                $cl.insertBefore($place);
+                $cl.removeClass('medium-insert-active');
+                $place.html('');
+            }
             $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
             $place = this.$el.find('.medium-insert-active');
             if ($place.next().is('p')) {
@@ -2093,6 +2103,7 @@ var ImageModesClasses = {
      */
 
     Images.prototype.selectImage = function (e) {
+        console.debug('selectimage');
         var that = this,
             $image;
 
@@ -2126,8 +2137,16 @@ var ImageModesClasses = {
      */
 
     Images.prototype.unselectImage = function (e) {
+        if (this.$currentImage == null) {
+            return false;
+        }
+        console.debug('unselectImage')
         var $el = $(e.target),
             $image = this.$el.find('.medium-insert-image-active');
+
+        if ($el.is(this.$currentImage)) {
+            return false;
+        }
 
         if ($el.is('img') && $el.hasClass('medium-insert-image-active')) {
             $image.not($el).removeClass('medium-insert-image-active');
