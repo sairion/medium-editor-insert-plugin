@@ -231,6 +231,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
                 var $place = this.$el.find('.medium-insert-active');
                 // From images.js 
                 if ($place.is('p')) {
+                    this.migrateExistingContent($place);
                     $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
                     $place = this.$el.find('.medium-insert-active');
                     if ($place.next().is('p')) {
@@ -766,6 +767,15 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
             $caption
                 .removeClass('medium-insert-caption-placeholder')
                 .removeAttr('data-placeholder');
+        }
+    };
+
+    Core.prototype.migrateExistingContent = function migrateExistingContent($place) {
+        if ($place.text().length > 0) { // ARTICLE_MOD: move text before $place
+            var $cl = $place.clone();
+            $cl.insertBefore($place);
+            $cl.removeClass('medium-insert-active');
+            $place.html('');
         }
     };
 
@@ -1909,12 +1919,7 @@ var ImageModesClasses = {
 
         // Replace paragraph with div, because figure elements can't be inside paragraph
         if ($place.is('p')) {
-            if ($place.text().length > 0) { // ARTICLE_MOD: move text before $place
-                var $cl = $place.clone();
-                $cl.insertBefore($place);
-                $cl.removeClass('medium-insert-active');
-                $place.html('');
-            }
+            this.core.migrateExistingContent($place);
             $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
             $place = this.$el.find('.medium-insert-active');
             if ($place.next().is('p')) {

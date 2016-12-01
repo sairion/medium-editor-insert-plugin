@@ -364,12 +364,7 @@ var ImageModesClasses = {
 
         // Replace paragraph with div, because figure elements can't be inside paragraph
         if ($place.is('p')) {
-            if ($place.text().length > 0) { // ARTICLE_MOD: move text before $place
-                var $cl = $place.clone();
-                $cl.insertBefore($place);
-                $cl.removeClass('medium-insert-active');
-                $place.html('');
-            }
+            this.core.migrateExistingContent($place);
             $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
             $place = this.$el.find('.medium-insert-active');
             if ($place.next().is('p')) {
