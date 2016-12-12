@@ -1711,7 +1711,7 @@ var ImageModesClasses = {
     };
 
     function changeMode($fig, prevMode, nextMode, tempCaptionCallback) {
-        console.debug('changeMode');
+        //console.debug('changeMode');
         $fig.attr('class', '');
         $fig.addClass(ImageModesClasses[nextMode]);
         $fig.attr('data-mode', nextMode);
@@ -1720,7 +1720,7 @@ var ImageModesClasses = {
         if ($caption.text().trim() !== '') {
             tempCaption = $caption.text();
         } else if (prevMode === ImageModes.Quoted) {
-            var quote = $fig.find('textarea').val().trim();
+            var quote = $fig.find('.textarea').text().trim();
             if (quote) {
                 tempCaption = quote;
             }
@@ -1738,9 +1738,9 @@ var ImageModesClasses = {
                 .wrap('<p />')
                 .wrap('<span class="image" />')
             $fig
-                .append('<p><textarea placeholder="“Start typing or paste article text...”" /></p>')
+                .append('<p contenteditable="true" class="textarea">“Start typing or paste article text...”</p>')
             if (tempCaption) {
-                $fig.find('textarea').val(tempCaption).text(tempCaption);
+                $fig.find('.textarea').text(tempCaption);
             }
         } else if (prevMode === ImageModes.Quoted) {
             var $img = $fig.find('img');
@@ -1848,7 +1848,7 @@ var ImageModesClasses = {
      */
 
     Images.prototype.add = function () {
-        console.debug('add');
+        //console.debug('add');
         var that = this,
             $file = $(this.templates['src/js/templates/images-fileupload.hbs']()),
             fileUploadOptions = {
@@ -2108,7 +2108,7 @@ var ImageModesClasses = {
      */
 
     Images.prototype.selectImage = function (e) {
-        console.debug('selectimage');
+        //console.debug('selectimage');
         var that = this,
             $image;
 
@@ -2145,7 +2145,7 @@ var ImageModesClasses = {
         if (this.$currentImage == null) {
             return false;
         }
-        console.debug('unselectImage')
+        //console.debug('unselectImage')
         var $el = $(e.target),
             $image = this.$el.find('.medium-insert-image-active');
 
@@ -2274,7 +2274,7 @@ var ImageModesClasses = {
      */
 
     Images.prototype.addToolbar = function () {
-        console.debug('addToolbar')
+        //console.debug('addToolbar')
         var $image = this.$el.find('.medium-insert-image-active'),
             $p = $image.closest('.medium-insert-images'),
             active = false,
