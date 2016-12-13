@@ -16,6 +16,8 @@ var ImageModesClasses = {
     Normal: 'mode-normal',
     Quoted: 'mode-quoted',
 };
+var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
+
 
 ; (function ($, window, document, Util, undefined) {
 
@@ -160,6 +162,7 @@ var ImageModesClasses = {
         $fig.attr('class', '');
         $fig.addClass(ImageModesClasses[nextMode]);
         $fig.attr('data-mode', nextMode);
+        $fig.attr('contenteditable', 'false');
         var $caption = $fig.find('figcaption');
         var tempCaption = '';
         if ($caption.text().trim() !== '') {
@@ -181,9 +184,9 @@ var ImageModesClasses = {
             $fig.find('figcaption').remove();
             $fig.find('img')
                 .wrap('<p />')
-                .wrap('<span class="image" />')
+                .wrap('<span class="image" />');
             $fig
-                .append('<p contenteditable="true" class="textarea">“Start typing or paste article text...”</p>')
+                .append('<p contenteditable="true" class="textarea" data-changed="false">' + quotedPlaceHolderMsg + '</p>');
             if (tempCaption) {
                 $fig.find('.textarea').text(tempCaption);
             }
@@ -238,7 +241,28 @@ var ImageModesClasses = {
             .on('change', '.medium-insert-images figure textarea', (function(event) {
                 var $target = $(event.target);
                 $target.text($target.val());
-            }).bind(this));
+            }).bind(this))
+
+            .on('click', '.medium-editor-insert-plugin .textarea', function(){ console.debug('click');
+                if (this.getAttribute('data-changed') === 'false') {
+                    this.textContent = '';
+                }
+            })
+            .on('keydown', '.medium-editor-insert-plugin .medium-insert-images', function(event){console.debug('keydown');
+                if (event.target.className === 'textarea') {debugger
+                    if (this.getAttribute('data-changed') !== 'true') {
+                        this.setAttribute('data-changed', 'true');
+                    }
+                }
+            })
+            .on('focusout', '.medium-editor-insert-plugin .medium-insert-images', function(event){ console.debug('focusout', event.target.className);
+                if (event.target.className === 'textarea') {
+                    debugger
+                    if (this.textContent.trim() === '') {
+                        this.textContent = quotedPlaceHolderMsg;
+                    }
+                }
+            })
             //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
             //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
             //.on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
