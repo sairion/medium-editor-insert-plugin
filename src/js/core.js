@@ -377,7 +377,13 @@
 
     Core.prototype.addButtons = function () {
         if (this.$el.find('.medium-insert-buttons').length === 0) {
-            this.$el.append(this.getButtons());
+            var buttons = this.getButtons();
+            if (this.$el.find('.gallery-container').length > 0) {
+                buttons = $(buttons).find('.gallery-insert-action').hide().end().prop('outerHTML');
+            } else {
+                buttons = $(buttons).find('.gallery-insert-action').css('display', 'block').end().prop('outerHTML');
+            }
+            this.$el.append(buttons);
         }
     };
 

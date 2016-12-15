@@ -158,7 +158,6 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
     };
 
     function changeMode($fig, prevMode, nextMode, tempCaptionCallback) {
-        //console.debug('changeMode');
         $fig.attr('class', '');
         $fig.addClass(ImageModesClasses[nextMode]);
         $fig.attr('data-mode', nextMode);
@@ -188,7 +187,9 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
             $fig
                 .append('<p contenteditable="true" class="textarea" data-changed="false">' + quotedPlaceHolderMsg + '</p>');
             if (tempCaption) {
-                $fig.find('.textarea').text(tempCaption);
+                $fig.find('.textarea')
+                    .text(tempCaption)
+                    .attr('data-changed', 'true');
             }
         } else if (prevMode === ImageModes.Quoted) {
             var $img = $fig.find('img');
@@ -243,23 +244,30 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 $target.text($target.val());
             }).bind(this))
 
-            .on('click', '.medium-editor-insert-plugin .textarea', function(){ console.debug('click');
-                if (this.getAttribute('data-changed') === 'false') {
-                    this.textContent = '';
+            .on('focusin', '.medium-editor-insert-plugin .medium-insert-images', function(event){
+                var el = event.target;
+                if (event.target.className === 'textarea') {
+                    if (el.getAttribute('data-changed') === 'false') {
+                        el.textContent = '';
+                    }
+                    $('.description.more').attr('data-disable-toolbar', 'true');
                 }
             })
-            .on('keydown', '.medium-editor-insert-plugin .medium-insert-images', function(event){console.debug('keydown');
-                if (event.target.className === 'textarea') {debugger
-                    if (this.getAttribute('data-changed') !== 'true') {
-                        this.setAttribute('data-changed', 'true');
+            .on('keydown', '.medium-editor-insert-plugin .medium-insert-images', function(event){
+                var el = event.target;
+                if (event.target.className === 'textarea') {
+                    if (el.getAttribute('data-changed') !== 'true') {
+                        el.setAttribute('data-changed', 'true');
                     }
                 }
             })
-            .on('focusout', '.medium-editor-insert-plugin .medium-insert-images', function(event){ console.debug('focusout', event.target.className);
-                if (event.target.className === 'textarea') {
-                    debugger
-                    if (this.textContent.trim() === '') {
-                        this.textContent = quotedPlaceHolderMsg;
+            .on('focusout', '.medium-editor-insert-plugin .medium-insert-images', function(event){
+                var el = event.target;
+                if (el.className === 'textarea') {
+                    $('.description.more').attr('data-disable-toolbar', null);
+                    if (el.textContent.trim() === '') {
+                        el.textContent = quotedPlaceHolderMsg;
+                        el.setAttribute('data-changed', 'false');
                     }
                 }
             })
@@ -317,7 +325,6 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      */
 
     Images.prototype.add = function () {
-        //console.debug('add');
         var that = this,
             $file = $(this.templates['src/js/templates/images-fileupload.hbs']()),
             fileUploadOptions = {
@@ -577,7 +584,6 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      */
 
     Images.prototype.selectImage = function (e) {
-        //console.debug('selectimage');
         var that = this,
             $image;
 
@@ -612,14 +618,13 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
     Images.prototype.unselectImage = function (e) {
         if (this.$currentImage == null) {
-            return false;
+            return;
         }
-        //console.debug('unselectImage')
         var $el = $(e.target),
             $image = this.$el.find('.medium-insert-image-active');
 
         if ($el.is(this.$currentImage)) {
-            return false;
+            return;
         }
 
         if ($el.is('img') && $el.hasClass('medium-insert-image-active')) {
@@ -743,7 +748,6 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      */
 
     Images.prototype.addToolbar = function () {
-        //console.debug('addToolbar')
         var $image = this.$el.find('.medium-insert-image-active'),
             $p = $image.closest('.medium-insert-images'),
             active = false,
