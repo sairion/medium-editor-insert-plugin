@@ -59,6 +59,6 @@
   },
   "scripts": {
     "test": "grunt test --verbose",
-    "go": "grunt handlebars && grunt concat && cp dist/js/medium-editor-insert-plugin.js $HOME/fancy-django/_static/modules/ui/article/MediumEditorInsertPluginFancy.js"
+    "go": "grunt handlebars && grunt concat && cp dist/js/medium-editor-insert-plugin.js $HOME/fancy-django/_static/modules/ui/article-admin/MediumEditorInsertPluginFancy.js"
   }
 }

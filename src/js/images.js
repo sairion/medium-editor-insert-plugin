@@ -275,7 +275,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
             //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
             //.on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
         this.$el
-            .on('mouseover', '.medium-insert-images img', $.proxy(this, 'selectImage'));
+            .on('click', '.medium-insert-images img', $.proxy(this, 'selectImage'));
 
         $(window)
             .on('resize', $.proxy(this, 'autoRepositionToolbars'));
@@ -529,10 +529,11 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
             }.bind(this);
             domImage.src = img;
         } else {
-            data.context = $(this.templates['src/js/templates/images-image.hbs']({
+            var expanded = $(this.templates['src/js/templates/images-image.hbs']({
                 img: img,
                 progress: this.options.preview
-            })).appendTo($place);
+            }));
+            data.context = expanded.appendTo($place);
             data.context.attr('data-mode', ImageModes.Normal);
 
             var $img = data.context.find('img');
