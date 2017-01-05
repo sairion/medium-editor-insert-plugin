@@ -129,6 +129,9 @@
                 }
                 window.gallery.renderTo($place);
             }).bind(this))
+            .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
+                this.$el.find('.add_option_tools').toggle();
+            }).bind(this))
             .on('paste', '.medium-insert-caption-placeholder', function (e) {
                 $.proxy(that, 'removeCaptionPlaceholder')($(e.target));
             });
