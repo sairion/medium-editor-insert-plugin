@@ -1788,9 +1788,9 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
             .on('click', $.proxy(this, 'unselectImage'))
             .on('keydown', $.proxy(this, 'removeImage'))
             .on('click', '.medium-insert-images.medium-insert-active .remove', (function(event) {
-                if (this.$currentImage) {
-                    this.$currentImage.closest('figure').remove();
-                }
+                event.preventDefault();
+                var fig = $(event.currentTarget).closest('.medium-insert-images figure');
+                fig.remove();
             }).bind(this))
             // Toolbar buttons.
             .on('click', '.medium-insert-images-toolbar .edit_full', (function(event) {
