@@ -184,7 +184,7 @@
                 }
             }).bind(this))
             .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
-                this.$el.find('.add_option_tools').closest('.show_option').hide().remove();
+                this.$el.find('.add_option_tools').hide();
             }).bind(this))
             .on('paste', '.medium-insert-caption-placeholder', function (e) {
                 $.proxy(that, 'removeCaptionPlaceholder')($(e.target));
