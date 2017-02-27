@@ -2,7 +2,7 @@ this["MediumInsert"] = this["MediumInsert"] || {};
 this["MediumInsert"]["Templates"] = this["MediumInsert"]["Templates"] || {};
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <div class=\"trick\"></div>\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a class=\"gallery-insert-action\">Insert Gallery</a>\n    </small>\n    <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
+    return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <div class=\"trick\"></div>\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a class=\"video-insert-action\">Insert Video</a>\n        <a class=\"gallery-insert-action\">Insert Gallery</a>\n    </small>\n    <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-caption.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {

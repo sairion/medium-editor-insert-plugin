@@ -24,6 +24,32 @@
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
+    // https://gist.github.com/yangshun/9892961#file-youtube-vimeo-url-parser-js-L24
+    function parseVideo (url) {
+        // - Supported YouTube URL formats:
+        //   - http://www.youtube.com/watch?v=My2FRPA3Gf8
+        //   - http://youtu.be/My2FRPA3Gf8
+        //   - https://youtube.googleapis.com/v/My2FRPA3Gf8
+        // - Supported Vimeo URL formats:
+        //   - http://vimeo.com/25451551
+        //   - http://player.vimeo.com/video/25451551
+        // - Also supports relative URLs:
+        //   - //player.vimeo.com/video/25451551
+
+        url.match(/(http:|https:|)\/\/(player.|www.)?(vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com))\/(video\/|embed\/|watch\?v=|v\/)?([A-Za-z0-9._%-]*)(\&\S+)?/);
+
+        if (RegExp.$3.indexOf('youtu') > -1) {
+            var type = 'youtube';
+        } else if (RegExp.$3.indexOf('vimeo') > -1) {
+            var type = 'vimeo';
+        }
+
+        return {
+            type: type,
+            id: RegExp.$6
+        };
+    }
+
     /**
      * Core plugin's object
      *
@@ -129,8 +155,36 @@
                 }
                 window.gallery.renderTo($place);
             }).bind(this))
+            .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
+                var input = window.prompt('Please put youtube address');
+                if (input == null) {
+                    return;
+                }
+                var vid = parseVideo(input.trim());
+                if (vid.type === 'youtube') { // youtube.com
+                    var $videoElement = $(`<p class="article-media media-youtube" data-service="youtube" data-service-id="${vid.id}" style="text-align: center;"><iframe src="https://www.youtube.com/embed/${vid.id}" width="560" height="315" frameborder="0" allowfullscreen=""></iframe></p>`);
+                    var $place = this.$el.find('.medium-insert-active');
+                    if ($place.is('p')) {
+                        this.migrateExistingContent($place);
+                        $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
+                        $place = this.$el.find('.medium-insert-active');
+                        if ($place.next().is('p')) {
+                            this.moveCaret($place.next());
+                        } else {
+                            $place.after('<p><br></p>'); // add empty paragraph so we can move the caret to the next line.
+                            this.moveCaret($place.next());
+                        }
+                        $place.replaceWith($videoElement);
+                        window.EditorControl.refresh();
+                    }
+                    return;
+                } else {
+                    window.alert('Video service other than youtube is not supported.');
+                    return;
+                }
+            }).bind(this))
             .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
-                this.$el.find('.add_option_tools').toggle();
+                this.$el.find('.add_option_tools').closest('.show_option').hide().remove();
             }).bind(this))
             .on('paste', '.medium-insert-caption-placeholder', function (e) {
                 $.proxy(that, 'removeCaptionPlaceholder')($(e.target));

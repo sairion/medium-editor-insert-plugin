@@ -8,7 +8,7 @@
         defaults = {
             label: '<span class="fa fa-youtube-play"></span>',
             placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
-            oembedProxy: 'http://medium.iframe.ly/api/oembed?iframe=1',
+            oembedProxy: 'https://medium.iframe.ly/api/oembed?iframe=1',
             captions: true,
             captionPlaceholder: 'Type caption (optional)',
             storeMeta: false,
