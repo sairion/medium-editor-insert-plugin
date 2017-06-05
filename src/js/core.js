@@ -271,7 +271,7 @@
 
     Core.prototype.editorUpdatePlaceholder = function (el, dontShow) {
         var contents = $(el).children()
-            .not('.medium-insert-buttons').contents();
+            .not('.medium-insert-buttons, iframe').contents();
 
         if (!dontShow && contents.length === 1 && contents[0].nodeName.toLowerCase() === 'br') {
             this.showPlaceholder(el);
