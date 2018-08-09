@@ -33,6 +33,10 @@ var define = false;
 this["MediumInsert"] = this["MediumInsert"] || {};
 this["MediumInsert"]["Templates"] = this["MediumInsert"]["Templates"] || {};
 
+this["MediumInsert"]["Templates"]["src/js/templates/core-buttons-gear.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<div class=\"add_option medium-insert-buttons whitelabel-gear\" contenteditable=\"false\" style=\"display: none\">\n  <small class=\"add_option_tools\" style=\"display: none;\">\n    <span class=\"insert-option\" style=\"display: block;\">\n      <label class=\"label\">INSERT</label>\n      <a class=\"insert-action-text\">\n        <i></i> Text</a>\n      <a class=\"insert-action-image\">\n        <i></i> Images</a>\n      <a class=\"insert-action-product\">\n        <i></i> Products</a>\n    </span>\n    <span class=\"insert-text\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">TEXT</a>\n      <a class=\"insert-action-text-body\">\n        <i></i> Body</a>\n      <a class=\"insert-action-text-quote\">\n        <i></i> Quote</a>\n    </span>\n    <span class=\"insert-image\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">IMAGE</a>\n      <a class=\"insert-action-image-single medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"single\">\n        <i></i> Single</a>\n      <a class=\"insert-action-image-slideshow medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"slideshow\">\n        <i></i> Slideshow</a>\n      <a class=\"insert-action-image-grid medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"grid\">\n        <i></i> Grid</a>\n    </span>\n    <span class=\"insert-product\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">PRODUCT</a>\n      <a class=\"insert-action-product-card\">\n        <i></i> Cards</a>\n      <a class=\"insert-action-product-slideshow\">\n        <i></i> Slideshow</a>\n    </span>\n    <span class=\"editable_tools\" style=\"display:none;\">\n      <label class=\"label\">IMAGE STYLE</label>\n      <a class=\"edit_full\">\n        <i></i>\n      </a>\n      <a class=\"edit_normal\">\n        <i></i>\n      </a>\n      <a class=\"edit_with_quote\">\n        <i></i>\n      </a>\n    </span>\n  </small>\n  <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
+},"useData":true});
+
 this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<div class=\"add_option medium-insert-buttons\" contenteditable=\"false\" style=\"display: none\">\n    <small class=\"add_option_tools\" style=\"display: none;\">\n        <div class=\"trick\"></div>\n        <a class=\"medium-insert-action\" data-addon=\"images\" data-action=\"add\">Insert Image</a>\n        <a class=\"video-insert-action\">Insert Video</a>\n        <a class=\"gallery-insert-action\">Insert Gallery</a>\n    </small>\n    <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
 },"useData":true});
@@ -269,6 +273,36 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
                 }
                 window.gallery.renderTo($place);
             }).bind(this))
+            .on('click', '.whitelabel-gear .insert-option .insert-action-text', function(){ // #ARTICLE_MOD
+                $('.add_option .insert-option').hide();
+                $('.add_option_tools .insert-text').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-option .insert-action-image', function(){ // #ARTICLE_MOD
+                $('.add_option .insert-option').hide()
+                $('.add_option_tools .insert-image').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-option .insert-action-product', function(){ // #ARTICLE_MOD
+                $('.add_option .insert-option').hide()
+                $('.add_option_tools .insert-product').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-text .label', function(){ // #ARTICLE_MOD
+                $('.add_option_tools .insert-text').hide();
+                $('.add_option .insert-option').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-image .label', function(){ // #ARTICLE_MOD
+                $('.add_option_tools .insert-image').hide();
+                $('.add_option .insert-option').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-product .label', function(){ // #ARTICLE_MOD
+                $('.add_option_tools .insert-product').hide();
+                $('.add_option .insert-option').show();
+                return false;
+            })
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
                 var input = window.prompt('Please put youtube address');
                 if (input == null) {
@@ -385,7 +419,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 
     Core.prototype.editorUpdatePlaceholder = function (el, dontShow) {
         var contents = $(el).children()
-            .not('.medium-insert-buttons').contents();
+            .not('.medium-insert-buttons, iframe').contents();
 
         if (!dontShow && contents.length === 1 && contents[0].nodeName.toLowerCase() === 'br') {
             this.showPlaceholder(el);
@@ -534,8 +568,14 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
         if (this.options.enabled === false) {
             return;
         }
+        var templateName;
+        if (window.isWhitelabel) {
+            templateName = 'src/js/templates/core-buttons-gear.hbs'
+        } else {
+            templateName = 'src/js/templates/core-buttons.hbs'
+        }
 
-        return this.templates['src/js/templates/core-buttons.hbs']({
+        return this.templates[templateName]({
             addons: this.options.addons
         }).trim();
     };

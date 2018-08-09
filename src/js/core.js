@@ -155,6 +155,36 @@
                 }
                 window.gallery.renderTo($place);
             }).bind(this))
+            .on('click', '.whitelabel-gear .insert-option .insert-action-text', function(){ // #ARTICLE_MOD
+                $('.add_option .insert-option').hide();
+                $('.add_option_tools .insert-text').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-option .insert-action-image', function(){ // #ARTICLE_MOD
+                $('.add_option .insert-option').hide()
+                $('.add_option_tools .insert-image').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-option .insert-action-product', function(){ // #ARTICLE_MOD
+                $('.add_option .insert-option').hide()
+                $('.add_option_tools .insert-product').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-text .label', function(){ // #ARTICLE_MOD
+                $('.add_option_tools .insert-text').hide();
+                $('.add_option .insert-option').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-image .label', function(){ // #ARTICLE_MOD
+                $('.add_option_tools .insert-image').hide();
+                $('.add_option .insert-option').show();
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-product .label', function(){ // #ARTICLE_MOD
+                $('.add_option_tools .insert-product').hide();
+                $('.add_option .insert-option').show();
+                return false;
+            })
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
                 var input = window.prompt('Please put youtube address');
                 if (input == null) {
@@ -420,8 +450,14 @@
         if (this.options.enabled === false) {
             return;
         }
+        var templateName;
+        if (window.isWhitelabel) {
+            templateName = 'src/js/templates/core-buttons-gear.hbs'
+        } else {
+            templateName = 'src/js/templates/core-buttons.hbs'
+        }
 
-        return this.templates['src/js/templates/core-buttons.hbs']({
+        return this.templates[templateName]({
             addons: this.options.addons
         }).trim();
     };
