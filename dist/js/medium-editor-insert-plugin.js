@@ -34,7 +34,7 @@ this["MediumInsert"] = this["MediumInsert"] || {};
 this["MediumInsert"]["Templates"] = this["MediumInsert"]["Templates"] || {};
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-buttons-gear.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"add_option medium-insert-buttons whitelabel-gear\" contenteditable=\"false\" style=\"display: none\">\n  <small class=\"add_option_tools\" style=\"display: none;\">\n    <span class=\"insert-option\" style=\"display: block;\">\n      <label class=\"label\">INSERT</label>\n      <a class=\"insert-action-text\">\n        <i></i> Text</a>\n      <a class=\"insert-action-image\">\n        <i></i> Images</a>\n      <a class=\"insert-action-product\">\n        <i></i> Products</a>\n    </span>\n    <span class=\"insert-text\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">TEXT</a>\n      <a class=\"insert-action-text-body\">\n        <i></i> Body</a>\n      <a class=\"insert-action-text-quote\">\n        <i></i> Quote</a>\n    </span>\n    <span class=\"insert-image\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">IMAGE</a>\n      <a class=\"insert-action-image-single medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"single\">\n        <i></i> Single</a>\n      <a class=\"insert-action-image-slideshow medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"slideshow\">\n        <i></i> Slideshow</a>\n      <a class=\"insert-action-image-grid medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"grid\">\n        <i></i> Grid</a>\n    </span>\n    <span class=\"insert-product\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">PRODUCT</a>\n      <a class=\"insert-action-product-card\">\n        <i></i> Cards</a>\n      <a class=\"insert-action-product-slideshow\">\n        <i></i> Slideshow</a>\n    </span>\n    <span class=\"editable_tools\" style=\"display:none;\">\n      <label class=\"label\">IMAGE STYLE</label>\n      <a class=\"edit_full\">\n        <i></i>\n      </a>\n      <a class=\"edit_normal\">\n        <i></i>\n      </a>\n      <a class=\"edit_with_quote\">\n        <i></i>\n      </a>\n    </span>\n  </small>\n  <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
+    return "<div class=\"add_option medium-insert-buttons whitelabel-gear\" contenteditable=\"false\" style=\"display: none\">\n  <small class=\"add_option_tools\" style=\"display: none;\">\n    <span class=\"insert-option\" style=\"display: block;\">\n      <label class=\"label\">INSERT</label>\n      <a class=\"insert-action-text\">\n        <i></i> Text</a>\n      <a class=\"insert-action-image\">\n        <i></i> Images</a>\n      <a class=\"insert-action-product\">\n        <i></i> Products</a>\n    </span>\n    <span class=\"insert-text\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">TEXT</a>\n      <a class=\"insert-action-text-body\">\n        <i></i> Body</a>\n      <a class=\"insert-action-text-quote\">\n        <i></i> Quote</a>\n    </span>\n    <span class=\"insert-image\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">IMAGE</a>\n      <a class=\"insert-action-image-single medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"single\">\n        <i></i> Single</a>\n      <a class=\"insert-action-image-slideshow medium-insert-action gallery-insert-action\">\n        <i></i> Slideshow</a>\n      <a class=\"insert-action-image-grid medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"grid\">\n        <i></i> Grid</a>\n    </span>\n    <span class=\"insert-product\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">PRODUCT</a>\n      <a class=\"insert-action-product-card\">\n        <i></i> Cards</a>\n      <a class=\"insert-action-product-slideshow\">\n        <i></i> Slideshow</a>\n    </span>\n    <span class=\"editable_tools\" style=\"display:none;\">\n      <label class=\"label\">IMAGE STYLE</label>\n      <a class=\"edit_full\">\n        <i></i>\n      </a>\n      <a class=\"edit_normal\">\n        <i></i>\n      </a>\n      <a class=\"edit_with_quote\">\n        <i></i>\n      </a>\n    </span>\n  </small>\n  <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -45,7 +45,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/core-caption.hbs"] = Handleb
     var helper;
 
   return "<figcaption contenteditable=\"true\" class=\"medium-insert-caption-placeholder\" data-placeholder=\""
-    + container.escapeExpression(((helper = (helper = helpers.placeholder || (depth0 != null ? depth0.placeholder : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"placeholder","hash":{},"data":data}) : helper)))
+    + container.escapeExpression(((helper = (helper = helpers.placeholder || (depth0 != null ? depth0.placeholder : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"placeholder","hash":{},"data":data}) : helper)))
     + "\"></figcaption>";
 },"useData":true});
 
@@ -57,14 +57,14 @@ this["MediumInsert"]["Templates"]["src/js/templates/embeds-toolbar.hbs"] = Handl
     var stack1;
 
   return "    <div class=\"medium-insert-embeds-toolbar medium-editor-toolbar medium-toolbar-arrow-under medium-editor-toolbar-active\">\n        <ul class=\"medium-editor-toolbar-actions clearfix\">\n"
-    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.styles : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.styles : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        </ul>\n    </div>\n";
 },"2":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.label : depth0),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.label : depth0),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"3":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function";
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function";
 
   return "                    <li>\n                        <button class=\"medium-editor-action\" data-action=\""
     + container.escapeExpression(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"key","hash":{},"data":data}) : helper)))
@@ -75,10 +75,10 @@ this["MediumInsert"]["Templates"]["src/js/templates/embeds-toolbar.hbs"] = Handl
     var stack1;
 
   return "    <div class=\"medium-insert-embeds-toolbar2 medium-editor-toolbar medium-editor-toolbar-active\">\n        <ul class=\"medium-editor-toolbar-actions clearfix\">\n"
-    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.actions : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.actions : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        </ul>\n    </div>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, alias1=depth0 != null ? depth0 : {};
+    var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {});
 
   return ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.styles : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n"
@@ -89,7 +89,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/embeds-wrapper.hbs"] = Handl
     var stack1, helper;
 
   return "<div class=\"medium-insert-embeds\" contenteditable=\"false\">\n	<figure>\n		<div class=\"medium-insert-embed\">\n			"
-    + ((stack1 = ((helper = (helper = helpers.html || (depth0 != null ? depth0.html : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"html","hash":{},"data":data}) : helper))) != null ? stack1 : "")
+    + ((stack1 = ((helper = (helper = helpers.html || (depth0 != null ? depth0.html : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"html","hash":{},"data":data}) : helper))) != null ? stack1 : "")
     + "\n		</div>\n	</figure>\n	<div class=\"medium-insert-embeds-overlay\"></div>\n</div>";
 },"useData":true});
 
@@ -100,7 +100,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-fileupload.hbs"] = Ha
 this["MediumInsert"]["Templates"]["src/js/templates/images-image.hbs"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     return "        <div class=\"medium-insert-images-progress\"></div>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {};
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {});
 
   return "<figure contenteditable=\"false\">\n    <img src=\""
     + container.escapeExpression(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
@@ -115,6 +115,18 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-progressbar.hbs"] = H
 
 this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<div class=\"medium-insert-images-toolbar medium-editor-toolbar medium-toolbar-arrow-under medium-editor-toolbar-active\">\n    <div class=\"editable_tools\">\n        <a class=\"edit_full\">Full</a>\n        <a class=\"edit_normal\">Normal</a>\n        <a class=\"edit_with_quote\">With Quote</a>\n    </div>\n</div>\n";
+},"useData":true});
+
+this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<li class=\"itemListElement\" data-id=\"<%= id %>\">\n  <span class=\"figure\">\n    <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= image %>)\">\n  </span>\n  <span class=\"figcaption\">\n    <span class=\"title\"><%= title %></span>\n    <b class=\"price\"><%= price %></b>\n  </span>\n  <a class=\"remove\">Remove</a>\n</li>\n";
+},"useData":true});
+
+this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <li class=\"itemListElement\">\n    <span class=\"figure\"><img src=\"/_ui/images/common/blank.gif\"></span>\n    <span class=\"figcaption\">\n      <span class=\"title\"></span>\n      <b class=\"price\"></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n</ul>\n";
+},"useData":true});
+
+this["MediumInsert"]["Templates"]["src/js/templates/product.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<ul class=\"itemList product\" contenteditable=\"false\">\n</ul>\n";
 },"useData":true});
 ;(function ($, window, document, undefined) {
 
@@ -238,6 +250,31 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
         this.initAddons();
         this.clean();
         this.events();
+
+        var tpl = this.templates['src/js/templates/product-card.hbs']().trim();
+        var productTemplate = _.template(tpl);
+        $.dialog('insert_product').$obj.data('productTemplate', productTemplate);
+
+        var loading = false;
+        $('.popup.insert_product input.text').on('keydown', function(e) {
+            if (!loading && e.which === 13) { // Enter
+                loading = true;
+                var val = e.currentTarget.value.trim()
+                $.get(window.REST_API_ENDPOINT + `${val}?sales=true`)
+                    .then(function(thing) {
+                        $('.inserting-product').prepend(productTemplate({ title: thing.sales.emojified_name, price: thing.sales.price, image: thing.image.src, id: thing.sales.id }));
+                        $.dialog('insert_product').close();
+                    })
+                    .fail(function(xhr) {
+                        if (xhr.status === 404) {
+                            alertify.alert('Product not found.');
+                        }
+                    })
+                    .always(function() {
+                        loading = false;
+                    });
+            }
+        })
     };
 
     /**
@@ -249,6 +286,29 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
     Core.prototype.events = function () {
         var that = this;
 
+        function adjustCaretBeforeInsertWidget(root) {
+            var $place = root.$el.find('.medium-insert-active');
+            // From images.js 
+            if ($place.is('p')) {
+                root.migrateExistingContent($place);
+                $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
+                $place = root.$el.find('.medium-insert-active');
+                if ($place.next().is('p')) {
+                    root.moveCaret($place.next());
+                } else {
+                    $place.after('<p><br></p>'); // add empty paragraph so we can move the caret to the next line.
+                    root.moveCaret($place.next());
+                }
+            }
+            return $place;
+        }
+
+        function resetOptionV2() {
+            $('.add_option').hide();
+            $('.add_option_tools .insert-product, .add_option_tools .insert-text, .add_option_tools .insert-image').hide();
+            $('.add_option .insert-option').show();
+        }
+
         this.$el
             .on('dragover drop', function (e) {
                 e.preventDefault();
@@ -258,19 +318,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
             .on('click', '.medium-insert-buttons-show', $.proxy(this, 'toggleAddons'))
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
             .on('click', '.gallery-insert-action', (function(){ // #ARTICLE_MOD
-                var $place = this.$el.find('.medium-insert-active');
-                // From images.js 
-                if ($place.is('p')) {
-                    this.migrateExistingContent($place);
-                    $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
-                    $place = this.$el.find('.medium-insert-active');
-                    if ($place.next().is('p')) {
-                        this.moveCaret($place.next());
-                    } else {
-                        $place.after('<p><br></p>'); // add empty paragraph so we can move the caret to the next line.
-                        this.moveCaret($place.next());
-                    }
-                }
+                var $place = adjustCaretBeforeInsertWidget(this);
                 window.gallery.renderTo($place);
             }).bind(this))
             .on('click', '.whitelabel-gear .insert-option .insert-action-text', function(){ // #ARTICLE_MOD
@@ -303,6 +351,51 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
                 $('.add_option .insert-option').show();
                 return false;
             })
+            // add text options
+            .on('click', '.whitelabel-gear .insert-action-text-body', function(){ // #ARTICLE_MOD
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-action-text-quote', function(){ // #ARTICLE_MOD
+                return false;
+            })
+            // add image options
+            .on('click', '.whitelabel-gear .insert-action-image-single', function(){ // #ARTICLE_MOD
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-action-image-grid', function(){ // #ARTICLE_MOD
+                return false;
+            })
+            // .on('click', '.whitelabel-gear .insert-action-image-slideshow', function(){ // #ARTICLE_MOD // delegated as .gallery-insert-action
+            //     return false;
+            // })
+            // add product card/slideshow
+            .on('click', '.whitelabel-gear .insert-action-product-card', (function(){ // #ARTICLE_MOD
+                var $place = adjustCaretBeforeInsertWidget(this);
+                var tpl = this.templates['src/js/templates/product.hbs']().trim();
+                var $ul = $(tpl).appendTo($place);
+                var productTemplate = $.dialog('insert_product').$obj.data('productTemplate');
+                $ul.append(productTemplate({ title: '', price: '', image: '', id: '' })).find('.itemListElement').addClass('add');
+                resetOptionV2();
+                return false;
+            }).bind(this))
+            .on('click', '.whitelabel-gear .insert-action-product-slideshow', (function(){ // #ARTICLE_MOD
+                var $place = adjustCaretBeforeInsertWidget(this);
+                var tpl = this.templates['src/js/templates/product-slideshow.hbs']().trim();
+                $(tpl).appendTo($place);
+                resetOptionV2();
+                return false;
+            }).bind(this))
+            .on('click', '.itemList.product .figure', function(){ // #ARTICLE_MOD
+                var $this = $(this);
+                $this.closest('.itemList.product').addClass('inserting-product');
+                var closeEventName = 'close.' + Math.random();
+                $.dialog('insert_product').$obj.on(closeEventName, function() {
+                    $this.removeClass('inserting-product');
+                    $.dialog('insert_product').$obj.off(closeEventName);
+                });
+                $.dialog('insert_product').open();
+                return false;
+            })
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
                 var input = window.prompt('Please put youtube address');
                 if (input == null) {
@@ -331,6 +424,23 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
                     return;
                 }
             }).bind(this))
+            // product card
+            .on('click', 'ul.itemList .itemListElement .remove', function(){
+                var len = $(this).closest('.itemList').find('.itemListElement').length;
+                if (len <= 1) {
+                    $(this).closest('.itemList').remove();
+                } else {
+                    $(this).closest('.itemListElement').remove();
+                }
+            })
+            .on('dragover', 'ul.itemList', function (e) {
+                console.log('dragover', e.currentTarget, e.target);
+                return false
+            })
+            .on('dragenter', 'ul.itemList', function (e) {
+                console.log('dragenter', e.currentTarget, e.target);
+                return false
+            })
             .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
                 this.$el.find('.add_option_tools').hide();
             }).bind(this))
@@ -569,7 +679,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
             return;
         }
         var templateName;
-        if (window.isWhitelabel) {
+        if (window.isWhitelabelV2) {
             templateName = 'src/js/templates/core-buttons-gear.hbs'
         } else {
             templateName = 'src/js/templates/core-buttons.hbs'

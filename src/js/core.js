@@ -120,6 +120,31 @@
         this.initAddons();
         this.clean();
         this.events();
+
+        var tpl = this.templates['src/js/templates/product-card.hbs']().trim();
+        var productTemplate = _.template(tpl);
+        $.dialog('insert_product').$obj.data('productTemplate', productTemplate);
+
+        var loading = false;
+        $('.popup.insert_product input.text').on('keydown', function(e) {
+            if (!loading && e.which === 13) { // Enter
+                loading = true;
+                var val = e.currentTarget.value.trim()
+                $.get(window.REST_API_ENDPOINT + `${val}?sales=true`)
+                    .then(function(thing) {
+                        $('.inserting-product').prepend(productTemplate({ title: thing.sales.emojified_name, price: thing.sales.price, image: thing.image.src, id: thing.sales.id }));
+                        $.dialog('insert_product').close();
+                    })
+                    .fail(function(xhr) {
+                        if (xhr.status === 404) {
+                            alertify.alert('Product not found.');
+                        }
+                    })
+                    .always(function() {
+                        loading = false;
+                    });
+            }
+        })
     };
 
     /**
@@ -131,6 +156,29 @@
     Core.prototype.events = function () {
         var that = this;
 
+        function adjustCaretBeforeInsertWidget(root) {
+            var $place = root.$el.find('.medium-insert-active');
+            // From images.js 
+            if ($place.is('p')) {
+                root.migrateExistingContent($place);
+                $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
+                $place = root.$el.find('.medium-insert-active');
+                if ($place.next().is('p')) {
+                    root.moveCaret($place.next());
+                } else {
+                    $place.after('<p><br></p>'); // add empty paragraph so we can move the caret to the next line.
+                    root.moveCaret($place.next());
+                }
+            }
+            return $place;
+        }
+
+        function resetOptionV2() {
+            $('.add_option').hide();
+            $('.add_option_tools .insert-product, .add_option_tools .insert-text, .add_option_tools .insert-image').hide();
+            $('.add_option .insert-option').show();
+        }
+
         this.$el
             .on('dragover drop', function (e) {
                 e.preventDefault();
@@ -140,19 +188,7 @@
             .on('click', '.medium-insert-buttons-show', $.proxy(this, 'toggleAddons'))
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
             .on('click', '.gallery-insert-action', (function(){ // #ARTICLE_MOD
-                var $place = this.$el.find('.medium-insert-active');
-                // From images.js 
-                if ($place.is('p')) {
-                    this.migrateExistingContent($place);
-                    $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
-                    $place = this.$el.find('.medium-insert-active');
-                    if ($place.next().is('p')) {
-                        this.moveCaret($place.next());
-                    } else {
-                        $place.after('<p><br></p>'); // add empty paragraph so we can move the caret to the next line.
-                        this.moveCaret($place.next());
-                    }
-                }
+                var $place = adjustCaretBeforeInsertWidget(this);
                 window.gallery.renderTo($place);
             }).bind(this))
             .on('click', '.whitelabel-gear .insert-option .insert-action-text', function(){ // #ARTICLE_MOD
@@ -185,6 +221,51 @@
                 $('.add_option .insert-option').show();
                 return false;
             })
+            // add text options
+            .on('click', '.whitelabel-gear .insert-action-text-body', function(){ // #ARTICLE_MOD
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-action-text-quote', function(){ // #ARTICLE_MOD
+                return false;
+            })
+            // add image options
+            .on('click', '.whitelabel-gear .insert-action-image-single', function(){ // #ARTICLE_MOD
+                return false;
+            })
+            .on('click', '.whitelabel-gear .insert-action-image-grid', function(){ // #ARTICLE_MOD
+                return false;
+            })
+            // .on('click', '.whitelabel-gear .insert-action-image-slideshow', function(){ // #ARTICLE_MOD // delegated as .gallery-insert-action
+            //     return false;
+            // })
+            // add product card/slideshow
+            .on('click', '.whitelabel-gear .insert-action-product-card', (function(){ // #ARTICLE_MOD
+                var $place = adjustCaretBeforeInsertWidget(this);
+                var tpl = this.templates['src/js/templates/product.hbs']().trim();
+                var $ul = $(tpl).appendTo($place);
+                var productTemplate = $.dialog('insert_product').$obj.data('productTemplate');
+                $ul.append(productTemplate({ title: '', price: '', image: '', id: '' })).find('.itemListElement').addClass('add');
+                resetOptionV2();
+                return false;
+            }).bind(this))
+            .on('click', '.whitelabel-gear .insert-action-product-slideshow', (function(){ // #ARTICLE_MOD
+                var $place = adjustCaretBeforeInsertWidget(this);
+                var tpl = this.templates['src/js/templates/product-slideshow.hbs']().trim();
+                $(tpl).appendTo($place);
+                resetOptionV2();
+                return false;
+            }).bind(this))
+            .on('click', '.itemList.product .figure', function(){ // #ARTICLE_MOD
+                var $this = $(this);
+                $this.closest('.itemList.product').addClass('inserting-product');
+                var closeEventName = 'close.' + Math.random();
+                $.dialog('insert_product').$obj.on(closeEventName, function() {
+                    $this.removeClass('inserting-product');
+                    $.dialog('insert_product').$obj.off(closeEventName);
+                });
+                $.dialog('insert_product').open();
+                return false;
+            })
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
                 var input = window.prompt('Please put youtube address');
                 if (input == null) {
@@ -213,6 +294,23 @@
                     return;
                 }
             }).bind(this))
+            // product card
+            .on('click', 'ul.itemList .itemListElement .remove', function(){
+                var len = $(this).closest('.itemList').find('.itemListElement').length;
+                if (len <= 1) {
+                    $(this).closest('.itemList').remove();
+                } else {
+                    $(this).closest('.itemListElement').remove();
+                }
+            })
+            .on('dragover', 'ul.itemList', function (e) {
+                console.log('dragover', e.currentTarget, e.target);
+                return false
+            })
+            .on('dragenter', 'ul.itemList', function (e) {
+                console.log('dragenter', e.currentTarget, e.target);
+                return false
+            })
             .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
                 this.$el.find('.add_option_tools').hide();
             }).bind(this))
@@ -451,7 +549,7 @@
             return;
         }
         var templateName;
-        if (window.isWhitelabel) {
+        if (window.isWhitelabelV2) {
             templateName = 'src/js/templates/core-buttons-gear.hbs'
         } else {
             templateName = 'src/js/templates/core-buttons.hbs'

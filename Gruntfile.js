@@ -137,7 +137,14 @@ module.exports = function (grunt) {
                 options: {
                     debounceDelay: 250
                 }
-            }
+            },
+            scripts: {
+                files: ['**/*.js'],
+                tasks: ['js'],
+                options: {
+                  spawn: false,
+                },
+            },
         },
 
         handlebars: {
@@ -151,9 +158,14 @@ module.exports = function (grunt) {
             }
         }
     });
-
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.registerTask('test', ['jscs', 'jshint', 'jasmine']);
-    grunt.registerTask('js', ['test', 'handlebars', 'concat', 'uglify']);
+    grunt.task.registerTask('copytofancy', 'asdf', function() {
+        const { spawn } = require('child_process')
+        spawn('cp', ['dist/js/medium-editor-insert-plugin.js', `${process.env.HOME}/fancy/_static/modules/ui/article-admin/MediumEditorInsertPluginFancy.js`])
+    });
+    grunt.registerTask('test', ['jscs', 'jshint', 'jasmine']);
+    grunt.registerTask('jsdev', ['handlebars', 'concat', 'copytofancy']);
     grunt.registerTask('css', ['sass', 'autoprefixer', 'csso', 'usebanner']);
     grunt.registerTask('default', ['js', 'css']);
 };

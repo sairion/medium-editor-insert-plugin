@@ -34,14 +34,15 @@
     "videos"
   ],
   "dependencies": {
-    "jquery": ">=1.9.0",
-    "medium-editor": "^5.15.0",
-    "handlebars": "~4.0.0",
     "blueimp-file-upload": "~9.12.1",
-    "jquery-sortable": "~0.9.12"
+    "handlebars": "~4.0.0",
+    "jquery": ">=1.9.0",
+    "jquery-sortable": "~0.9.12",
+    "medium-editor": "^5.15.0",
+    "node-sass": "^4.9.3"
   },
   "devDependencies": {
-    "grunt": "~0.4.4",
+    "grunt": "^0.4.5",
     "grunt-autoprefixer": "^3.0.1",
     "grunt-banner": "^0.6.0",
     "grunt-contrib-concat": "^0.5.1",
@@ -49,16 +50,16 @@
     "grunt-contrib-jasmine": "^0.9.2",
     "grunt-contrib-jshint": "~0.11.0",
     "grunt-contrib-uglify": "~0.9.1",
-    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-watch": "^0.6.1",
     "grunt-csso": "^0.7.0",
     "grunt-jscs": "^2.8.0",
-    "grunt-sass": "~1.1.0",
+    "grunt-sass": "~3.0.1",
     "grunt-template-jasmine-istanbul": "^0.3.4",
     "jit-grunt": "^0.9.1",
-    "time-grunt": "^1.1.0"
+    "time-grunt": "^1.4.0"
   },
   "scripts": {
     "test": "grunt test --verbose",
-    "go": "grunt handlebars && grunt concat && cp dist/js/medium-editor-insert-plugin.js $HOME/fancy/_static/modules/ui/article-admin/MediumEditorInsertPluginFancy.js"
+    "go": "grunt jsdev"
   }
 }
