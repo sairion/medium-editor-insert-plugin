@@ -1,10 +1,14 @@
-<li class="itemListElement" data-id="<%= id %>">
-  <span class="figure">
-    <img src="/_ui/images/common/blank.gif" style="background-image:url(<%= image %>)">
-  </span>
-  <span class="figcaption">
-    <span class="title"><%= title %></span>
-    <b class="price"><%= price %></b>
-  </span>
-  <a class="remove">Remove</a>
-</li>
+<ul class="itemList product" contenteditable="false">
+  <% items.forEach(function(item) { %>
+  <li class="itemListElement" data-id="<%= item.id %>">
+    <span class="figure">
+      <img src="/_ui/images/common/blank.gif" style="background-image:url(<%= item.image %>)">
+    </span>
+    <span class="figcaption">
+      <span class="title"><%= item.title %></span>
+      <b class="price"><%= item.price %></b>
+    </span>
+    <a class="remove">Remove</a>
+  </li>
+  <% }); %>
+</ul>

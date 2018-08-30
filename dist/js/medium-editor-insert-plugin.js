@@ -118,15 +118,11 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<li class=\"itemListElement\" data-id=\"<%= id %>\">\n  <span class=\"figure\">\n    <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= image %>)\">\n  </span>\n  <span class=\"figcaption\">\n    <span class=\"title\"><%= title %></span>\n    <b class=\"price\"><%= price %></b>\n  </span>\n  <a class=\"remove\">Remove</a>\n</li>\n";
+    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <b class=\"price\"><%= item.price %></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n</ul>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <li class=\"itemListElement\">\n    <span class=\"figure\"><img src=\"/_ui/images/common/blank.gif\"></span>\n    <span class=\"figcaption\">\n      <span class=\"title\"></span>\n      <b class=\"price\"></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n</ul>\n";
-},"useData":true});
-
-this["MediumInsert"]["Templates"]["src/js/templates/product.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<ul class=\"itemList product\" contenteditable=\"false\">\n</ul>\n";
+    return "<div class=\"itemSlide\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <% items.forEach(function(item) { %>\n      <li class=\"\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<%= item.html_url %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n</div>\n";
 },"useData":true});
 ;(function ($, window, document, undefined) {
 
@@ -240,6 +236,34 @@ this["MediumInsert"]["Templates"]["src/js/templates/product.hbs"] = Handlebars.t
      * @return {void}
      */
 
+    function getAdjacentCursor($place) {
+        var $container = $('.description.more');
+        var isFirstChild = $place.is(':first-child');
+        var cursor;
+        if (isFirstChild) {
+            return { recoveryMode: 'insert-first' };
+        } else {
+            if ($place.is('.description.more > *')) {
+                cursor = $place.before();
+            } else {
+                cursor = $place.closest('.description.more > *').before();
+            }
+            return { recoveryMode: 'insert-next', cursor: cursor };
+        }
+    }
+
+    function restoreCursor(recoveryObject) {
+        var elToReplace = $('<p />')
+        if (recoveryObject.recoveryMode === 'insert-first') {
+            $('.description.more').prepend(elToReplace);
+        } else if (recoveryObject.recoveryMode === 'insert-next') {
+            elToReplace.insertAfter(recoveryObject.cursor);
+        } else {
+            console.warn("restoreCursor(): ?")
+        }
+        return elToReplace;
+    }
+
     Core.prototype.init = function () {
         this.$el.addClass('medium-editor-insert-plugin');
 
@@ -250,82 +274,97 @@ this["MediumInsert"]["Templates"]["src/js/templates/product.hbs"] = Handlebars.t
         this.initAddons();
         this.clean();
         this.events();
-
         var tpl = this.templates['src/js/templates/product-card.hbs']().trim();
-        var wrapperTemplate = this.templates['src/js/templates/product.hbs']().trim()
-        var productTemplate = _.template(tpl);
+        var productCardTemplate = _.template(tpl);
+        var productSlideshowTemplate = this.templates['src/js/templates/product-slideshow.hbs']().trim();
         var $insertProductDialog = $.dialog('insert_product').$obj;
+        var selectedTemplate = _.template($insertProductDialog.find('#popup-tpl-selected').html())
+        var searchedTemplate = _.template($insertProductDialog.find('#popup-tpl-searched').html())
+        var $searched = $insertProductDialog.find('.suggest');
+        var $selected = $insertProductDialog.find('.featured');
+        Sortable.create($selected.find('ul').get(0), {
+            handle: '.btn-move',
+        });
+        
         $insertProductDialog
-            .data('productTemplate', productTemplate)
-            .data('wrapperTemplate', wrapperTemplate);
+            .data('productCardTemplate', productCardTemplate)
+            .data('productSlideshowTemplate', productSlideshowTemplate);
 
-        var loading = false;
-        $('.popup.insert_product input.text').on('keydown', function(e) {
-            if (!loading && e.which === 13) { // Enter
-                loading = true;
-                var val = e.currentTarget.value.trim()
-                var $place = $insertProductDialog.data('cursor');
-                var $ul = $(wrapperTemplate);
-                $.get(window.REST_API_ENDPOINT + `${val}?sales=true`)
-                    .then(function(thing) {
-                        $ul.prepend(productTemplate({ title: thing.sales.emojified_name, price: thing.sales.price, image: thing.image.src, id: thing.sales.id }));
-                        $place.replaceWith($ul);
-                        $.dialog('insert_product').close();
-                    })
-                    .fail(function(xhr) {
-                        if (xhr.status === 404) {
-                            alertify.alert('Product not found.');
-                        }
-                    })
-                    .always(function() {
-                        loading = false;
-                    });
+        var ThingCache = {};
+        window.ThingCache = ThingCache;
+        var searchCache = {};
+
+        $insertProductDialog.find('input.text').on('keyup', _.debounce(function(e) {
+            var val = e.currentTarget.value.trim()
+            var dfd;
+            if (searchCache[val]) {
+                dfd = $.Deferred();
+                dfd.resolve(searchCache[val]);
+            } else {
+                dfd = $.get(window.REST_API_ENDPOINT, { keyword: val });
             }
-        });
-        $('.popup.insert_product .btn-save').on('click', function () {
-            var $place = $insertProductDialog.data('cursor');
-            var $ul = $(wrapperTemplate);
-            var sids = $insertProductDialog.find('.featured li.selected').map(function(i, e){ return $(e).attr('data-sid'); }).toArray();
-            __F.FancyUtils.jQueryPromiseAll(sids.map(function(sid) {
-                var dfd = $.Deferred();
-                $.get(window.REST_API_ENDPOINT + `${sid}?sales=true`)
-                    .then(function(thing) {
-                        $ul.prepend(productTemplate({ title: thing.sales.emojified_name, price: thing.sales.price, image: thing.image.src, id: thing.sales.id }));
-                        $place.replaceWith($ul);
-                        dfd.resolve();
-                    })
-                    .fail(function(xhr) {
-                        console.warn(xhr);
+            dfd.then(function(things) {
+                if (!searchCache[val]) {
+                    searchCache[val] = things;
+                }
+                $searched.empty();
+                if (things.products.length > 0) {
+                    $searched.show();
+                    things.products.forEach(function(thing) {
+                        $searched.append($(searchedTemplate(thing)).data('thing', thing));
+                        thing.cached = true;
+                        ThingCache[thing.id] = thing;
                     });
-                return dfd.promise();
-            })).done(function() {
-                $.dialog('insert_product').close();
+                } else {
+                    $searched.hide();
+                }
             })
-        });
-        $insertProductDialog.on('click', '.featured li', function(){
-            $(this).toggleClass('selected');
-            var btnDisabled = $insertProductDialog.find('.featured li.selected').length === 0;
-            $insertProductDialog.find('.btn-save').attr('disabled', btnDisabled);
-        });
-        $insertProductDialog.on('open', function() {
-            $(this).find('.btn-save').attr('disabled', true);
-            var endpoint = '/admin/view-seller-recent-items.json'
-            if (location.args.seller_id) {
-                endpoint += '?seller_id=' + location.args.seller_id;
+            .fail(function(xhr) {
+                if (xhr.status === 404) {
+                    alertify.alert('Product not found.');
+                }
+            })
+        }, 500));
+        $('.popup.insert_product .btn-save').on('click', function () {
+            var type = $insertProductDialog .data('type');
+            var $place = restoreCursor($insertProductDialog.data('cursor'));
+            var items = $selected.find('li')
+                .map(function(i, e){ return $(e).attr('data-sid'); }).toArray()
+                .map(function(sid){ return ThingCache[sid]; });
+            var tpl; 
+            if (type === 'card') {
+                tpl = productCardTemplate
+            } else if (type === 'slideshow') {
+                tpl = productSlideshowTemplate
             }
-            $.get(endpoint)
-                .then(function(res) {
-                    if (res.status_code === 1) {
-                        var $ul = $('.popup.insert_product .featured ul');
-                        $ul.empty();
-                        var tpl = _.template($('.popup.insert_product script').html())
-                        res.sale_items.forEach(function(si) {
-                            $ul.append(tpl(si));
-                        })
-                    } else {
-                        console.warn('User is not a seller', res)
-                    }
-                })
+            $place.replaceWith(tpl({ items: items }));
+            $.dialog('insert_product').close();
+        });
+
+        $searched.on('click', 'li', function(){
+            $searched.hide();
+            var thing = $(this).data('thing');
+            $selected.show();
+            $selected.find('ul')
+                .append(selectedTemplate(thing))
+            $insertProductDialog.find('.btn-save').attr('disabled', false);
+        });
+
+        $selected.on('click', 'li .btn-del', function(){
+            $(this).closest('li').remove();
+            if ($selected.find('li').length === 0) {
+                $insertProductDialog.find('.btn-save').attr('disabled', true);
+                $selected.hide();
+            }
+        });
+
+        $insertProductDialog.on('open', function() {
+            $insertProductDialog.find('input.text').val('');
+            $selected
+                .find('ul').empty().end()
+                .hide();
+            $searched.empty().hide();
+            $(this).find('.btn-save').attr('disabled', true);
         });
     };
 
@@ -423,17 +462,17 @@ this["MediumInsert"]["Templates"]["src/js/templates/product.hbs"] = Handlebars.t
             // add product card/slideshow
             .on('click', '.whitelabel-gear .insert-action-product-card', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
-                var productTemplate = $.dialog('insert_product').$obj.data('productTemplate');
-                $.dialog('insert_product').$obj.data('cursor', $place);
+                $.dialog('insert_product').$obj.data('cursor', getAdjacentCursor($place));
+                $.dialog('insert_product').$obj.data('type', 'card');
                 $.dialog('insert_product').open();
-                // $ul.append(productTemplate({ title: '', price: '', image: '', id: '' })).find('.itemListElement').addClass('add');
                 resetOptionV2();
                 return false;
             }).bind(this))
             .on('click', '.whitelabel-gear .insert-action-product-slideshow', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
-                var tpl = this.templates['src/js/templates/product-slideshow.hbs']().trim();
-                $(tpl).appendTo($place);
+                $.dialog('insert_product').$obj.data('cursor', getAdjacentCursor($place));
+                $.dialog('insert_product').$obj.data('type', 'slideshow');
+                $.dialog('insert_product').open();
                 resetOptionV2();
                 return false;
             }).bind(this))

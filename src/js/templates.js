@@ -86,13 +86,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<li class=\"itemListElement\" data-id=\"<%= id %>\">\n  <span class=\"figure\">\n    <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= image %>)\">\n  </span>\n  <span class=\"figcaption\">\n    <span class=\"title\"><%= title %></span>\n    <b class=\"price\"><%= price %></b>\n  </span>\n  <a class=\"remove\">Remove</a>\n</li>\n";
+    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <b class=\"price\"><%= item.price %></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n</ul>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <li class=\"itemListElement\">\n    <span class=\"figure\"><img src=\"/_ui/images/common/blank.gif\"></span>\n    <span class=\"figcaption\">\n      <span class=\"title\"></span>\n      <b class=\"price\"></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n</ul>\n";
-},"useData":true});
-
-this["MediumInsert"]["Templates"]["src/js/templates/product.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<ul class=\"itemList product\" contenteditable=\"false\">\n</ul>\n";
+    return "<div class=\"itemSlide\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <% items.forEach(function(item) { %>\n      <li class=\"\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<%= item.html_url %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n</div>\n";
 },"useData":true});

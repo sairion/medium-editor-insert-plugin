@@ -1,10 +1,21 @@
-<ul class="itemList product" contenteditable="false">
-  <li class="itemListElement">
-    <span class="figure"><img src="/_ui/images/common/blank.gif"></span>
-    <span class="figcaption">
-      <span class="title"></span>
-      <b class="price"></b>
-    </span>
-    <a class="remove">Remove</a>
-  </li>
-</ul>
+<div class="itemSlide">
+  <div class="itemSlideWrap">
+    <ol class="stream after">
+      <% items.forEach(function(item) { %>
+      <li class="">
+        <div class="figure-item">
+          <figure><a href="<%= item.html_url %>?utm=article"><span
+                class="back"></span><img class="figure" src="/_ui/images/common/blank.gif" style="background-image: url(<%= item.image %>);"></a>
+          </figure>
+          <figcaption>
+            <span class="show_cart"><button class="btn-cart nopopup soldout"><em>$<%= item.price %></em></button></span><a href="<%= item.html_url %>?utm=article" class="title"><%= item.title %></a>
+          </figcaption>
+          <a class="delete"></a>
+        </div>
+      </li>
+      <% }); %>
+    </ol>
+  </div>
+  <a href="#" class="prev">Prev</a>
+  <a href="#" class="next">Next</a>
+</div>
