@@ -121,6 +121,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
         this._defaults = defaults;
         this._name = pluginName;
+        this.meta = null; // should be set as null after use
 
         // Allow image preview only in browsers, that support's that
         if (this.options.preview && !window.FileReader) {
@@ -324,7 +325,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      * @return {void}
      */
 
-    Images.prototype.add = function () {
+    Images.prototype.add = function (meta) {
         var that = this,
             $file = $(this.templates['src/js/templates/images-fileupload.hbs']()),
             fileUploadOptions = {
@@ -336,6 +337,9 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                     $.proxy(that, 'uploadDone', e, data)();
                 }
             };
+        if (meta) {
+            this.meta = meta;
+        }
 
         // Only add progress callbacks for browsers that support XHR2,
         // and test for XHR2 per:
@@ -543,7 +547,11 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
             $place.find('br').remove();
 
-            if (this.options.autoGrid && $place.find('figure').length >= this.options.autoGrid) {
+            // Trigger grid
+            if (
+                (this.options.autoGrid && $place.find('figure').length >= this.options.autoGrid) ||
+                false
+            ) {
                 $.each(this.options.styles, function (style, options) {
                     var className = 'medium-insert-images-' + style;
 

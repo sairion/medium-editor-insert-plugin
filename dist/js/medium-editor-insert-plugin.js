@@ -34,7 +34,7 @@ this["MediumInsert"] = this["MediumInsert"] || {};
 this["MediumInsert"]["Templates"] = this["MediumInsert"]["Templates"] || {};
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-buttons-gear.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"add_option medium-insert-buttons whitelabel-gear\" contenteditable=\"false\" style=\"display: none\">\n  <small class=\"add_option_tools\" style=\"display: none;\">\n    <span class=\"insert-option\" style=\"display: block;\">\n      <label class=\"label\">INSERT</label>\n      <a class=\"insert-action-text\">\n        <i></i> Text</a>\n      <a class=\"insert-action-image\">\n        <i></i> Images</a>\n      <a class=\"insert-action-product\">\n        <i></i> Products</a>\n    </span>\n    <span class=\"insert-text\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">TEXT</a>\n      <a class=\"insert-action-text-body\">\n        <i></i> Body</a>\n      <a class=\"insert-action-text-quote\">\n        <i></i> Quote</a>\n    </span>\n    <span class=\"insert-image\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">IMAGE</a>\n      <a class=\"insert-action-image-single medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"single\">\n        <i></i> Single</a>\n      <a class=\"insert-action-image-slideshow medium-insert-action gallery-insert-action\">\n        <i></i> Slideshow</a>\n      <a class=\"insert-action-image-grid medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"grid\">\n        <i></i> Grid</a>\n    </span>\n    <span class=\"insert-product\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">PRODUCT</a>\n      <a class=\"insert-action-product-card\">\n        <i></i> Cards</a>\n      <a class=\"insert-action-product-slideshow\">\n        <i></i> Slideshow</a>\n    </span>\n    <span class=\"editable_tools\" style=\"display:none;\">\n      <label class=\"label\">IMAGE STYLE</label>\n      <a class=\"edit_full\">\n        <i></i>\n      </a>\n      <a class=\"edit_normal\">\n        <i></i>\n      </a>\n      <a class=\"edit_with_quote\">\n        <i></i>\n      </a>\n    </span>\n  </small>\n  <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
+    return "<div class=\"add_option medium-insert-buttons whitelabel-gear\" contenteditable=\"false\" style=\"display: none\">\n  <small class=\"add_option_tools\" style=\"display: none;\">\n    <span class=\"insert-option\" style=\"display: block;\">\n      <label class=\"label\">INSERT</label>\n      <a class=\"insert-action-text\">\n        <i></i> Text</a>\n      <a class=\"insert-action-image\">\n        <i></i> Images</a>\n      <a class=\"insert-action-product\">\n        <i></i> Products</a>\n    </span>\n    <span class=\"insert-text\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">TEXT</a>\n      <a class=\"insert-action-text-body\">\n        <i></i> Body</a>\n      <a class=\"insert-action-text-quote\">\n        <i></i> Quote</a>\n    </span>\n    <span class=\"insert-image\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">IMAGE</a>\n      <a class=\"insert-action-image-single medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"single\">\n        <i></i> Single</a>\n      <a class=\"insert-action-image-slideshow medium-insert-action gallery-insert-action\">\n        <i></i> Slideshow</a>\n      <a class=\"insert-action-image-grid medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-meta='{ \"type\": \"grid\" }'>\n        <i></i> Grid</a>\n    </span>\n    <span class=\"insert-product\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">PRODUCT</a>\n      <a class=\"insert-action-product-card\">\n        <i></i> Cards</a>\n      <a class=\"insert-action-product-slideshow\">\n        <i></i> Slideshow</a>\n    </span>\n    <span class=\"editable_tools\" style=\"display:none;\">\n      <label class=\"label\">IMAGE STYLE</label>\n      <a class=\"edit_full\">\n        <i></i>\n      </a>\n      <a class=\"edit_normal\">\n        <i></i>\n      </a>\n      <a class=\"edit_with_quote\">\n        <i></i>\n      </a>\n    </span>\n  </small>\n  <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -122,7 +122,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handleb
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"itemSlide\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <% items.forEach(function(item) { %>\n      <li class=\"\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<%= item.html_url %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n</div>\n";
+    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<%= item.html_url %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n</div>\n";
 },"useData":true});
 ;(function ($, window, document, undefined) {
 
@@ -274,98 +274,156 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
         this.initAddons();
         this.clean();
         this.events();
-        var tpl = this.templates['src/js/templates/product-card.hbs']().trim();
-        var productCardTemplate = _.template(tpl);
-        var productSlideshowTemplate = this.templates['src/js/templates/product-slideshow.hbs']().trim();
-        var $insertProductDialog = $.dialog('insert_product').$obj;
-        var selectedTemplate = _.template($insertProductDialog.find('#popup-tpl-selected').html())
-        var searchedTemplate = _.template($insertProductDialog.find('#popup-tpl-searched').html())
-        var $searched = $insertProductDialog.find('.suggest');
-        var $selected = $insertProductDialog.find('.featured');
-        Sortable.create($selected.find('ul').get(0), {
-            handle: '.btn-move',
-        });
-        
-        $insertProductDialog
-            .data('productCardTemplate', productCardTemplate)
-            .data('productSlideshowTemplate', productSlideshowTemplate);
 
-        var ThingCache = {};
-        window.ThingCache = ThingCache;
-        var searchCache = {};
+        if (window.isWhitelabelV2) {
+            var productCardTemplate = _.template(this.templates['src/js/templates/product-card.hbs']().trim());
+            var productSlideshowTemplate = _.template(this.templates['src/js/templates/product-slideshow.hbs']().trim());
+            var $insertProductDialog = $.dialog('insert_product').$obj;
+            var selectedTemplate = _.template($insertProductDialog.find('#popup-tpl-selected').html())
+            var searchedTemplate = _.template($insertProductDialog.find('#popup-tpl-searched').html())
+            var $searched = $insertProductDialog.find('.suggest');
+            var $selected = $insertProductDialog.find('.featured');
+            Sortable.create($selected.find('ul').get(0), {
+                handle: '.btn-move',
+            });
+            
+            $insertProductDialog
+                .data('productCardTemplate', productCardTemplate)
+                .data('productSlideshowTemplate', productSlideshowTemplate);
 
-        $insertProductDialog.find('input.text').on('keyup', _.debounce(function(e) {
-            var val = e.currentTarget.value.trim()
-            var dfd;
-            if (searchCache[val]) {
-                dfd = $.Deferred();
-                dfd.resolve(searchCache[val]);
-            } else {
-                dfd = $.get(window.REST_API_ENDPOINT, { keyword: val });
-            }
-            dfd.then(function(things) {
-                if (!searchCache[val]) {
-                    searchCache[val] = things;
-                }
-                $searched.empty();
-                if (things.products.length > 0) {
-                    $searched.show();
-                    things.products.forEach(function(thing) {
-                        $searched.append($(searchedTemplate(thing)).data('thing', thing));
-                        thing.cached = true;
-                        ThingCache[thing.id] = thing;
-                    });
+            var ThingCache = {};
+            window.ThingCache = ThingCache;
+            var searchCache = {};
+            var ref = { selectedItemIds: [] };
+
+            $insertProductDialog.find('input.text').on('keyup', _.debounce(function(e) {
+                var val = e.currentTarget.value.trim()
+                var dfd;
+                if (searchCache[val]) {
+                    dfd = $.Deferred();
+                    dfd.resolve(searchCache[val]);
                 } else {
-                    $searched.hide();
+                    dfd = $.get(window.REST_API_ENDPOINT, { keyword: val });
+                }
+                dfd.then(function(things) {
+                    if (!searchCache[val]) {
+                        searchCache[val] = things;
+                    }
+                    $searched.empty();
+                    if (things.products.length > 0) {
+                        $searched.show();
+                        things.products.forEach(function(thing) {
+                            var selected = _.find(ref.selectedItemIds, function(sid){ return thing.id === sid }) !== undefined;
+                            if (!selected) {
+                                $searched.append($(searchedTemplate(thing)).data('thing', thing));
+                                if (ThingCache[thing.id] == null) {
+                                    thing.cached = true;
+                                    ThingCache[thing.id] = thing;
+                                }
+                            }
+                        });
+                    } else {
+                        $searched.hide();
+                    }
+                })
+                .fail(function(xhr) {
+                    if (xhr.status === 404) {
+                        alertify.alert('Product not found.');
+                    }
+                })
+            }, 500));
+            $('.popup.insert_product .btn-save').on('click', function () {
+                var type = $insertProductDialog .data('type');
+                var $place = restoreCursor($insertProductDialog.data('cursor'));
+                var items = $selected.find('li')
+                    .map(function(i, e){ return $(e).attr('data-sid'); }).toArray()
+                    .map(function(sid){ return ThingCache[sid]; });
+                var tpl; 
+                if (type === 'card') {
+                    tpl = productCardTemplate;
+                } else if (type === 'slideshow') {
+                    tpl = productSlideshowTemplate;
+                }
+                var $el = $(tpl({ items: items }));
+                $el.data('selectedItemIds', _.clone(ref.selectedItemIds));
+
+                var updatingRoot = $(this).data('updatingRoot');
+                // slideshow update mode
+                if (updatingRoot) {
+                    updatingRoot.replaceWith($el);
+                    $(this).data('updatingRoot', null);
+                } else {
+                    $place.replaceWith($el);
+                }
+
+                $.dialog('insert_product').close();
+            });
+
+            $searched.on('click', 'li', function(){
+                $searched.hide();
+                var thing = $(this).data('thing');
+                $selected.show();
+                // find dupe
+                var $dupe = $selected.find('ul li[data-sid="' + thing.id + '"]')
+                if ($dupe.length > 0) {
+                    return;
+                }
+                ref.selectedItemIds.push(thing.id);
+                $selected.find('ul')
+                    .append(selectedTemplate(thing));
+                var cnt = ref.selectedItemIds.length;
+                $insertProductDialog.find('.btn-save')
+                    .attr('disabled', false)
+                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Item'));
+            });
+
+            $selected.on('click', 'li .btn-del', function(){
+                var sidToDelete = Number($(this).closest('li').data('sid'));
+                $(this).closest('li').remove();
+                ref.selectedItemIds = ref.selectedItemIds.filter(function(sid) { return sid !== sidToDelete });
+                if (ref.selectedItemIds.length === 0) {
+                    $insertProductDialog.find('.btn-save').attr('disabled', true).text('Insert 0 Items');
+                    $selected.hide();
+                }
+                var cnt = ref.selectedItemIds.length;
+                $insertProductDialog.find('.btn-save')
+                    .attr('disabled', false)
+                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Item'));
+                return false;
+            });
+
+            $insertProductDialog.data('setSaved', function setSaved($root, _selectedItemIds) {
+                if (_selectedItemIds.length > 0) {
+                    // copy contents
+                    ref.selectedItemIds = _selectedItemIds;
+                    _selectedItemIds.forEach(function(tid) {
+                        var thing = ThingCache[tid];
+                        $selected.find('ul').append(selectedTemplate(thing));
+                    });
+                    $selected.show();
+                    var cnt = _selectedItemIds.length;
+                    $insertProductDialog.find('.btn-save')
+                        .attr('disabled', false)    
+                        .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Item'));
+                    $insertProductDialog.find('.btn-save').data('updatingRoot', $root);
                 }
             })
-            .fail(function(xhr) {
-                if (xhr.status === 404) {
-                    alertify.alert('Product not found.');
-                }
-            })
-        }, 500));
-        $('.popup.insert_product .btn-save').on('click', function () {
-            var type = $insertProductDialog .data('type');
-            var $place = restoreCursor($insertProductDialog.data('cursor'));
-            var items = $selected.find('li')
-                .map(function(i, e){ return $(e).attr('data-sid'); }).toArray()
-                .map(function(sid){ return ThingCache[sid]; });
-            var tpl; 
-            if (type === 'card') {
-                tpl = productCardTemplate
-            } else if (type === 'slideshow') {
-                tpl = productSlideshowTemplate
-            }
-            $place.replaceWith(tpl({ items: items }));
-            $.dialog('insert_product').close();
-        });
 
-        $searched.on('click', 'li', function(){
-            $searched.hide();
-            var thing = $(this).data('thing');
-            $selected.show();
-            $selected.find('ul')
-                .append(selectedTemplate(thing))
-            $insertProductDialog.find('.btn-save').attr('disabled', false);
-        });
+            // reset
+            $insertProductDialog.on('open', function() {
+                ref.selectedItemIds = [];
+                $insertProductDialog.find('input.text').val('');
+                $selected
+                    .find('ul').empty().end()
+                    .hide();
+                $searched.empty().hide();
+                $(this).find('.btn-save').attr('disabled', true).text('Insert 0 Items');
+            });
 
-        $selected.on('click', 'li .btn-del', function(){
-            $(this).closest('li').remove();
-            if ($selected.find('li').length === 0) {
-                $insertProductDialog.find('.btn-save').attr('disabled', true);
-                $selected.hide();
-            }
-        });
-
-        $insertProductDialog.on('open', function() {
-            $insertProductDialog.find('input.text').val('');
-            $selected
-                .find('ul').empty().end()
-                .hide();
-            $searched.empty().hide();
-            $(this).find('.btn-save').attr('disabled', true);
-        });
+            // toggle button
+            this.positionButtons();
+            this.showButtons();
+        } // if whitelabel v2 end
     };
 
     /**
@@ -476,15 +534,16 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 resetOptionV2();
                 return false;
             }).bind(this))
-            .on('click', '.itemList.product .figure', function(){ // #ARTICLE_MOD
-                // var $this = $(this);
-                // $this.closest('.itemList.product').addClass('inserting-product');
-                // var closeEventName = 'close.' + Math.random();
-                // $.dialog('insert_product').$obj.on(closeEventName, function() {
-                //     $this.removeClass('inserting-product');
-                //     $.dialog('insert_product').$obj.off(closeEventName);
-                // });
-                // $.dialog('insert_product').open();
+
+            
+            .on('click', '.itemSlide .figure-item.add input', function(){ // #ARTICLE_MOD
+                $.dialog('insert_product').open();
+                // give time for reset
+                var $that = $(this);
+                setTimeout(function(){
+                    var selectedItemIds = $that.closest('.product').data('selectedItemIds');
+                    $.dialog('insert_product').$obj.data('setSaved')($that.closest('.product'), selectedItemIds);
+                }, 50);
                 return false;
             })
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
@@ -971,9 +1030,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
     Core.prototype.addonAction = function (e) {
         var $a = $(e.currentTarget),
             addon = $a.data('addon'),
-            action = $a.data('action');
-
-        this.$el.data('plugin_' + pluginName + ucfirst(addon))[action]();
+            action = $a.data('action'),
+            meta = $a.data('meta');
+        this.$el.data('plugin_' + pluginName + ucfirst(addon))[action](meta);
     };
 
     /**
@@ -1972,6 +2031,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
         this._defaults = defaults;
         this._name = pluginName;
+        this.meta = null; // should be set as null after use
 
         // Allow image preview only in browsers, that support's that
         if (this.options.preview && !window.FileReader) {
@@ -2175,7 +2235,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      * @return {void}
      */
 
-    Images.prototype.add = function () {
+    Images.prototype.add = function (meta) {
         var that = this,
             $file = $(this.templates['src/js/templates/images-fileupload.hbs']()),
             fileUploadOptions = {
@@ -2187,6 +2247,9 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                     $.proxy(that, 'uploadDone', e, data)();
                 }
             };
+        if (meta) {
+            this.meta = meta;
+        }
 
         // Only add progress callbacks for browsers that support XHR2,
         // and test for XHR2 per:
@@ -2394,7 +2457,11 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
             $place.find('br').remove();
 
-            if (this.options.autoGrid && $place.find('figure').length >= this.options.autoGrid) {
+            // Trigger grid
+            if (
+                (this.options.autoGrid && $place.find('figure').length >= this.options.autoGrid) ||
+                false
+            ) {
                 $.each(this.options.styles, function (style, options) {
                     var className = 'medium-insert-images-' + style;
 
