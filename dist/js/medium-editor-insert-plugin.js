@@ -122,7 +122,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handleb
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<%= item.html_url %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n</div>\n";
+    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"itemSlideElement\" data-id=\"<%= item.id %>\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<%= item.html_url %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n</div>\n";
 },"useData":true});
 ;(function ($, window, document, undefined) {
 
@@ -333,11 +333,11 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 })
             }, 500));
             $('.popup.insert_product .btn-save').on('click', function () {
-                var type = $insertProductDialog .data('type');
-                var $place = restoreCursor($insertProductDialog.data('cursor'));
                 var items = $selected.find('li')
                     .map(function(i, e){ return $(e).attr('data-sid'); }).toArray()
                     .map(function(sid){ return ThingCache[sid]; });
+                // select template and feed context
+                var type = $insertProductDialog.data('type');
                 var tpl; 
                 if (type === 'card') {
                     tpl = productCardTemplate;
@@ -353,6 +353,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     updatingRoot.replaceWith($el);
                     $(this).data('updatingRoot', null);
                 } else {
+                    var $place = restoreCursor($insertProductDialog.data('cursor'));
                     $place.replaceWith($el);
                 }
 
@@ -396,9 +397,50 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 if (_selectedItemIds.length > 0) {
                     // copy contents
                     ref.selectedItemIds = _selectedItemIds;
-                    _selectedItemIds.forEach(function(tid) {
-                        var thing = ThingCache[tid];
-                        $selected.find('ul').append(selectedTemplate(thing));
+                    _selectedItemIds.forEach(function(sid) {
+                        var promise = $.Deferred();
+                        if (ThingCache[sid]) {
+                            promise.resolve(ThingCache[sid]);
+                        } else {
+                            $.get('/rest-api/v1/things/' + sid + '?sales=true')
+                                .then(function(thing) {
+                                    var ctx;
+                                    try {
+                                        var image = (thing.sales.images[0] && thing.sales.images[0].src) || thing.image.src;
+                                        ctx = {
+                                            id: thing.sales.id,
+                                            brand_name: thing.sales.seller.brand_name,
+                                            title: thing.sales.title,
+                                            price: thing.sales.price,
+                                            thumbnail: image,
+                                            image: image,
+                                        }
+                                        ThingCache[thing.sales.id] = ctx;
+                                    } catch(e) {
+                                        ctx = {
+                                            id: '0',
+                                            brand_name: 'UNABLE_TO_LOAD',
+                                            title: 'UNABLE_TO_LOAD',
+                                            price: 0,
+                                            thumbnail: '/_ui/images/common/blank.gif',
+                                        };
+                                    }
+                                    promise.resolve(ctx);
+                                })
+                                .fail(function(xhr) {
+                                    console.warn('failed to load', sid, xhr);
+                                    promise.resolve({
+                                        id: '0',
+                                        brand_name: 'UNABLE_TO_LOAD',
+                                        title: 'UNABLE_TO_LOAD',
+                                        price: 0,
+                                        thumbnail: '/_ui/images/common/blank.gif',
+                                    });
+                                });
+                        }
+                        promise.then(function(thing) {
+                            $selected.find('ul').append(selectedTemplate(thing));
+                        })
                     });
                     $selected.show();
                     var cnt = _selectedItemIds.length;
@@ -538,10 +580,16 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             
             .on('click', '.itemSlide .figure-item.add input', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
+                $.dialog('insert_product').$obj.data('type', 'slideshow')
                 // give time for reset
                 var $that = $(this);
                 setTimeout(function(){
                     var selectedItemIds = $that.closest('.product').data('selectedItemIds');
+                    if (selectedItemIds == null) {
+                        selectedItemIds = $that.closest('.product').find('li').map(function(i, e) {
+                            return $(e).data('id');
+                        }).toArray();
+                    }
                     $.dialog('insert_product').$obj.data('setSaved')($that.closest('.product'), selectedItemIds);
                 }, 50);
                 return false;
@@ -576,11 +624,42 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             }).bind(this))
             // product card
             .on('click', 'ul.itemList .itemListElement .remove', function(){
-                var len = $(this).closest('.itemList').find('.itemListElement').length;
-                if (len <= 1) {
+                var $wrapper = $(this).closest('.product');
+                var selectedItemIds = $wrapper.data('selectedItemIds');
+                if (selectedItemIds == null) {
+                    selectedItemIds = $(this).closest('.product').find('li').map(function(i, e) {
+                        return $(e).data('id')
+                    }).toArray()
+                }
+                if (selectedItemIds.length <= 1) {
                     $(this).closest('.itemList').remove();
+                    $wrapper.data('selectedItemIds', []);
                 } else {
-                    $(this).closest('.itemListElement').remove();
+                    var $li = $(this).closest('.itemListElement');
+                    var removingId = $li.data('id');
+                    var next = $wrapper.data('selectedItemIds').filter(function(sid) { return sid !== removingId });
+                    $wrapper.data('selectedItemIds', next);
+                    $li.remove();
+                }
+            })
+            // product slideshow
+            .on('click', '.itemSlide li.itemSlideElement .delete', function(){
+                var $wrapper = $(this).closest('.product');
+                var selectedItemIds = $wrapper.data('selectedItemIds');
+                if (selectedItemIds == null) {
+                    selectedItemIds = $(this).closest('.product').find('li').map(function(i, e) {
+                        return $(e).data('id')
+                    }).toArray()
+                }
+                if (selectedItemIds.length <= 1) {
+                    $(this).closest('.itemSlide').remove();
+                    $wrapper.data('selectedItemIds', []);
+                } else {
+                    var $li = $(this).closest('.itemSlideElement');
+                    var removingId = $li.data('id');
+                    var next = selectedItemIds.filter(function(sid) { return sid !== removingId });
+                    $wrapper.data('selectedItemIds', next);
+                    $li.remove();
                 }
             })
             .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD

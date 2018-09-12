@@ -3,7 +3,7 @@
     <ol class="stream after">
       <li><div class="figure-item add"><input type="file"></div></li>
       <% items.forEach(function(item) { %>
-      <li class="">
+      <li class="itemSlideElement" data-id="<%= item.id %>">
         <div class="figure-item">
           <figure><a href="<%= item.html_url %>?utm=article"><span
                 class="back"></span><img class="figure" src="/_ui/images/common/blank.gif" style="background-image: url(<%= item.image %>);"></a>
