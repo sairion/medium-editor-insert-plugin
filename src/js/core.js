@@ -170,42 +170,50 @@
             var searchCache = {};
             var ref = { selectedItemIds: [] };
 
-            $insertProductDialog.find('input.text').on('keyup', _.debounce(function(e) {
-                var val = e.currentTarget.value.trim()
-                var dfd;
-                if (searchCache[val]) {
-                    dfd = $.Deferred();
-                    dfd.resolve(searchCache[val]);
-                } else {
-                    dfd = $.get(window.REST_API_ENDPOINT, { keyword: val });
-                }
-                dfd.then(function(things) {
-                    if (!searchCache[val]) {
-                        searchCache[val] = things;
-                    }
-                    $searched.empty();
-                    if (things.products.length > 0) {
-                        $searched.show();
-                        things.products.forEach(function(thing) {
-                            var selected = _.find(ref.selectedItemIds, function(sid){ return thing.id === sid }) !== undefined;
-                            if (!selected) {
-                                $searched.append($(searchedTemplate(thing)).data('thing', thing));
-                                if (ThingCache[thing.id] == null) {
-                                    thing.cached = true;
-                                    ThingCache[thing.id] = thing;
-                                }
-                            }
-                        });
-                    } else {
+            $insertProductDialog.find('input.text')
+                .on('keyup', _.debounce(function(e) {
+                    var val = e.target.value.trim();
+                    if (val === '') {
                         $searched.hide();
+                        return;
                     }
-                })
-                .fail(function(xhr) {
-                    if (xhr.status === 404) {
-                        alertify.alert('Product not found.');
+                    var dfd;
+                    if (searchCache[val]) {
+                        dfd = $.Deferred();
+                        dfd.resolve(searchCache[val]);
+                    } else {
+                        dfd = $.get(window.REST_API_ENDPOINT, { keyword: val });
                     }
-                })
-            }, 500));
+                    dfd.then(function(things) {
+                        if (!searchCache[val]) {
+                            searchCache[val] = things;
+                        }
+                        $searched.empty();
+                        if (things.products.length > 0) {
+                            $searched.show();
+                            things.products.forEach(function(thing) {
+                                var selected = _.find(ref.selectedItemIds, function(sid){ return thing.id === sid }) !== undefined;
+                                if (!selected) {
+                                    $searched.append($(searchedTemplate(thing)).data('thing', thing));
+                                    if (ThingCache[thing.id] == null) {
+                                        thing.cached = true;
+                                        ThingCache[thing.id] = thing;
+                                    }
+                                }
+                            });
+                        } else {
+                            $searched.hide();
+                        }
+                    })
+                    .fail(function(xhr) {
+                        if (xhr.status === 404) {
+                            alertify.alert('Product not found.');
+                        }
+                    })
+                }, 500))
+                .on('focus', function() {
+                    $(this).trigger('keyup');
+                });
             $('.popup.insert_product .btn-save').on('click', function () {
                 var items = $selected.find('li')
                     .map(function(i, e){ return $(e).attr('data-sid'); }).toArray()
@@ -450,8 +458,6 @@
                 resetOptionV2();
                 return false;
             }).bind(this))
-
-            
             .on('click', '.itemSlide .figure-item.add input', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
                 $.dialog('insert_product').$obj.data('type', 'slideshow')
@@ -466,6 +472,43 @@
                     }
                     $.dialog('insert_product').$obj.data('setSaved')($that.closest('.product'), selectedItemIds);
                 }, 50);
+                return false;
+            })
+            .on('click', '.itemSlide .prev', function(){ // #ARTICLE_MOD
+                var $wrapper = $(this).closest('.product');
+                var len = $wrapper.find('li').length;
+                if (len <= 4) {
+                    return false;
+                }
+                var si = $wrapper.data('slide-index');
+                if (si == null) {
+                    si = 0;
+                    $wrapper.data('slide-index', 0);
+                }
+                if (si === 0) {
+                    return false;
+                }
+                $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si - 1) * -95.5) + '%)');
+                $wrapper.data('slide-index', si - 1);
+                return false;
+            })
+            .on('click', '.itemSlide .next', function(){ // #ARTICLE_MOD
+                var $wrapper = $(this).closest('.product');
+                var len = $wrapper.find('li').length;
+                if (len <= 4) {
+                    return false;
+                }
+                var si = $wrapper.data('slide-index');
+                if (si == null) {
+                    si = 0;
+                    $wrapper.data('slide-index', 0);
+                }
+                var max = Math.floor(len / 4);
+                if (si === max) {
+                    return false;
+                }
+                $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si + 1) * -95.5) + '%)');
+                $wrapper.data('slide-index', si + 1);
                 return false;
             })
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
