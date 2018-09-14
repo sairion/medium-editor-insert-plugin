@@ -122,7 +122,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handleb
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"itemSlideElement\" data-id=\"<%= item.id %>\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<%= item.html_url %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n</div>\n";
+    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"itemSlideElement\" data-id=\"<%= item.id %>\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<%= item.html_url %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete slideshow</a>\n  </small>\n</div>\n";
 },"useData":true});
 ;(function ($, window, document, undefined) {
 
@@ -383,7 +383,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 var cnt = ref.selectedItemIds.length;
                 $insertProductDialog.find('.btn-save')
                     .attr('disabled', false)
-                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Item'));
+                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Items'));
             });
 
             $selected.on('click', 'li .btn-del', function(){
@@ -391,13 +391,13 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 $(this).closest('li').remove();
                 ref.selectedItemIds = ref.selectedItemIds.filter(function(sid) { return sid !== sidToDelete });
                 if (ref.selectedItemIds.length === 0) {
-                    $insertProductDialog.find('.btn-save').attr('disabled', true).text('Insert 0 Items');
+                    $insertProductDialog.find('.btn-save').attr('disabled', true).text('Insert Items');
                     $selected.hide();
                 }
                 var cnt = ref.selectedItemIds.length;
                 $insertProductDialog.find('.btn-save')
                     .attr('disabled', false)
-                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Item'));
+                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Items'));
                 return false;
             });
 
@@ -454,7 +454,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     var cnt = _selectedItemIds.length;
                     $insertProductDialog.find('.btn-save')
                         .attr('disabled', false)    
-                        .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Item'));
+                        .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Items'));
                     $insertProductDialog.find('.btn-save').data('updatingRoot', $root);
                 }
             })
@@ -467,7 +467,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     .find('ul').empty().end()
                     .hide();
                 $searched.empty().hide();
-                $(this).find('.btn-save').attr('disabled', true).text('Insert 0 Items');
+                $(this).find('.btn-save').attr('disabled', true).text('Insert Items');
             });
 
             // toggle button
@@ -584,7 +584,13 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 resetOptionV2();
                 return false;
             }).bind(this))
-            .on('click', '.itemSlide .figure-item.add input', function(){ // #ARTICLE_MOD
+            .on('mouseover', '.itemSlide', function() {
+                $(this).find('.add_option_tools').show();
+            })
+            .on('mouseout', '.itemSlide', function () {
+                $(this).find('.add_option_tools').hide();
+            })
+            .on('click', '.itemSlide .figure-item.add input, .itemSlide .add-product', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
                 $.dialog('insert_product').$obj.data('type', 'slideshow')
                 // give time for reset
@@ -696,7 +702,6 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 }
                 if (selectedItemIds.length <= 1) {
                     $(this).closest('.itemSlide').remove();
-                    $wrapper.data('selectedItemIds', []);
                 } else {
                     var $li = $(this).closest('.itemSlideElement');
                     var removingId = $li.data('id');
@@ -704,6 +709,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     $wrapper.data('selectedItemIds', next);
                     $li.remove();
                 }
+            })
+            .on('click', '.itemSlide .delete-slideshow', function(){
+                $(this).closest('.itemSlide').remove();
             })
             .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
                 this.$el.find('.add_option_tools').hide();

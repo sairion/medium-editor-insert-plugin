@@ -257,7 +257,7 @@
                 var cnt = ref.selectedItemIds.length;
                 $insertProductDialog.find('.btn-save')
                     .attr('disabled', false)
-                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Item'));
+                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Items'));
             });
 
             $selected.on('click', 'li .btn-del', function(){
@@ -265,13 +265,13 @@
                 $(this).closest('li').remove();
                 ref.selectedItemIds = ref.selectedItemIds.filter(function(sid) { return sid !== sidToDelete });
                 if (ref.selectedItemIds.length === 0) {
-                    $insertProductDialog.find('.btn-save').attr('disabled', true).text('Insert 0 Items');
+                    $insertProductDialog.find('.btn-save').attr('disabled', true).text('Insert Items');
                     $selected.hide();
                 }
                 var cnt = ref.selectedItemIds.length;
                 $insertProductDialog.find('.btn-save')
                     .attr('disabled', false)
-                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Item'));
+                    .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Items'));
                 return false;
             });
 
@@ -328,7 +328,7 @@
                     var cnt = _selectedItemIds.length;
                     $insertProductDialog.find('.btn-save')
                         .attr('disabled', false)    
-                        .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Item'));
+                        .text('Insert ' + cnt + (cnt === 1 ? ' Item' : ' Items'));
                     $insertProductDialog.find('.btn-save').data('updatingRoot', $root);
                 }
             })
@@ -341,7 +341,7 @@
                     .find('ul').empty().end()
                     .hide();
                 $searched.empty().hide();
-                $(this).find('.btn-save').attr('disabled', true).text('Insert 0 Items');
+                $(this).find('.btn-save').attr('disabled', true).text('Insert Items');
             });
 
             // toggle button
@@ -458,7 +458,13 @@
                 resetOptionV2();
                 return false;
             }).bind(this))
-            .on('click', '.itemSlide .figure-item.add input', function(){ // #ARTICLE_MOD
+            .on('mouseover', '.itemSlide', function() {
+                $(this).find('.add_option_tools').show();
+            })
+            .on('mouseout', '.itemSlide', function () {
+                $(this).find('.add_option_tools').hide();
+            })
+            .on('click', '.itemSlide .figure-item.add input, .itemSlide .add-product', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
                 $.dialog('insert_product').$obj.data('type', 'slideshow')
                 // give time for reset
@@ -570,7 +576,6 @@
                 }
                 if (selectedItemIds.length <= 1) {
                     $(this).closest('.itemSlide').remove();
-                    $wrapper.data('selectedItemIds', []);
                 } else {
                     var $li = $(this).closest('.itemSlideElement');
                     var removingId = $li.data('id');
@@ -578,6 +583,9 @@
                     $wrapper.data('selectedItemIds', next);
                     $li.remove();
                 }
+            })
+            .on('click', '.itemSlide .delete-slideshow', function(){
+                $(this).closest('.itemSlide').remove();
             })
             .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
                 this.$el.find('.add_option_tools').hide();
