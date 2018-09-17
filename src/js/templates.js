@@ -86,7 +86,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <b class=\"price\"><%= item.price %></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n</ul>\n";
+    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <b class=\"price\"><%= item.price %></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete slideshow</a>\n  </small>\n</ul>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {

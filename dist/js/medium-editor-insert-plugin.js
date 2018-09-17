@@ -118,7 +118,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <b class=\"price\"><%= item.price %></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n</ul>\n";
+    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <b class=\"price\"><%= item.price %></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete slideshow</a>\n  </small>\n</ul>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -283,9 +283,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             var searchedTemplate = _.template($insertProductDialog.find('#popup-tpl-searched').html())
             var $searched = $insertProductDialog.find('.suggest');
             var $selected = $insertProductDialog.find('.featured');
-            Sortable.create($selected.find('ul').get(0), {
-                handle: '.btn-move',
-            });
+            // Sortable.create($selected.find('ul').get(0), {
+            //     handle: '.btn-move',
+            // });
             
             $insertProductDialog
                 .data('productCardTemplate', productCardTemplate)
@@ -379,7 +379,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 }
                 ref.selectedItemIds.push(thing.id);
                 $selected.find('ul')
-                    .append(selectedTemplate(thing));
+                    .prepend(selectedTemplate(thing));
                 var cnt = ref.selectedItemIds.length;
                 $insertProductDialog.find('.btn-save')
                     .attr('disabled', false)
@@ -520,55 +520,94 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 var $place = adjustCaretBeforeInsertWidget(this);
                 window.gallery.renderTo($place);
             }).bind(this))
-            .on('click', '.whitelabel-gear .insert-option .insert-action-text', function(){ // #ARTICLE_MOD
+            .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
+                var input = window.prompt('Please put youtube address');
+                if (input == null) {
+                    return;
+                }
+                var vid = parseVideo(input.trim());
+                if (vid.type === 'youtube') { // youtube.com
+                    var $videoElement = $(`<p class="article-media media-youtube" data-service="youtube" data-service-id="${vid.id}" style="text-align: center;"><iframe src="https://www.youtube.com/embed/${vid.id}" width="560" height="315" frameborder="0" allowfullscreen=""></iframe></p>`);
+                    var $place = this.$el.find('.medium-insert-active');
+                    if ($place.is('p')) {
+                        this.migrateExistingContent($place);
+                        $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
+                        $place = this.$el.find('.medium-insert-active');
+                        if ($place.next().is('p')) {
+                            this.moveCaret($place.next());
+                        } else {
+                            $place.after('<p><br></p>'); // add empty paragraph so we can move the caret to the next line.
+                            this.moveCaret($place.next());
+                        }
+                        $place.replaceWith($videoElement);
+                        window.EditorControl.refresh();
+                    }
+                    return;
+                } else {
+                    window.alert('Video service other than youtube is not supported.');
+                    return;
+                }
+            }).bind(this))
+            .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
+                this.$el.find('.add_option_tools').hide();
+            }).bind(this))
+            .on('paste', '.medium-insert-caption-placeholder', function (e) {
+                $.proxy(that, 'removeCaptionPlaceholder')($(e.target));
+            });
+        /*
+            Whitelabel V2 Stuff
+        */
+        if (isWhitelabelV2) {
+           this.$el
+           .on('click', '.insert-option .insert-action-text', function(){ // #ARTICLE_MOD
                 $('.add_option .insert-option').hide();
                 $('.add_option_tools .insert-text').show();
                 return false;
             })
-            .on('click', '.whitelabel-gear .insert-option .insert-action-image', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-option .insert-action-image', function(){ // #ARTICLE_MOD
                 $('.add_option .insert-option').hide()
                 $('.add_option_tools .insert-image').show();
                 return false;
             })
-            .on('click', '.whitelabel-gear .insert-option .insert-action-product', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-option .insert-action-product', function(){ // #ARTICLE_MOD
                 $('.add_option .insert-option').hide()
                 $('.add_option_tools .insert-product').show();
                 return false;
             })
-            .on('click', '.whitelabel-gear .insert-text .label', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-text .label', function(){ // #ARTICLE_MOD
                 $('.add_option_tools .insert-text').hide();
                 $('.add_option .insert-option').show();
                 return false;
             })
-            .on('click', '.whitelabel-gear .insert-image .label', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-image .label', function(){ // #ARTICLE_MOD
                 $('.add_option_tools .insert-image').hide();
                 $('.add_option .insert-option').show();
                 return false;
             })
-            .on('click', '.whitelabel-gear .insert-product .label', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-product .label', function(){ // #ARTICLE_MOD
                 $('.add_option_tools .insert-product').hide();
                 $('.add_option .insert-option').show();
                 return false;
             })
             // add text options
-            .on('click', '.whitelabel-gear .insert-action-text-body', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-action-text-body', function(){ // #ARTICLE_MOD
                 return false;
             })
-            .on('click', '.whitelabel-gear .insert-action-text-quote', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-action-text-quote', function(){ // #ARTICLE_MOD
                 return false;
             })
             // add image options
-            .on('click', '.whitelabel-gear .insert-action-image-single', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-action-image-single', function(){ // #ARTICLE_MOD
                 return false;
             })
-            .on('click', '.whitelabel-gear .insert-action-image-grid', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-action-image-grid', function(){ // #ARTICLE_MOD
                 return false;
             })
-            // .on('click', '.whitelabel-gear .insert-action-image-slideshow', function(){ // #ARTICLE_MOD // delegated as .gallery-insert-action
+            // .on('click', '.insert-action-image-slideshow', function(){ // #ARTICLE_MOD // delegated as .gallery-insert-action
             //     return false;
             // })
             // add product card/slideshow
-            .on('click', '.whitelabel-gear .insert-action-product-card', (function(){ // #ARTICLE_MOD
+            .on('click', '.insert-action-product-card', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
                 $.dialog('insert_product').$obj.data('cursor', getAdjacentCursor($place));
                 $.dialog('insert_product').$obj.data('type', 'card');
@@ -576,7 +615,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 resetOptionV2();
                 return false;
             }).bind(this))
-            .on('click', '.whitelabel-gear .insert-action-product-slideshow', (function(){ // #ARTICLE_MOD
+            .on('click', '.insert-action-product-slideshow', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
                 $.dialog('insert_product').$obj.data('cursor', getAdjacentCursor($place));
                 $.dialog('insert_product').$obj.data('type', 'slideshow');
@@ -584,15 +623,19 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 resetOptionV2();
                 return false;
             }).bind(this))
-            .on('mouseover', '.itemSlide', function() {
+            .on('mouseover', '.product', function() {
                 $(this).find('.add_option_tools').show();
             })
-            .on('mouseout', '.itemSlide', function () {
+            .on('mouseout', '.product', function () {
                 $(this).find('.add_option_tools').hide();
             })
-            .on('click', '.itemSlide .figure-item.add input, .itemSlide .add-product', function(){ // #ARTICLE_MOD
+            .on('click', '.product .figure-item.add input, .product .add-product', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
-                $.dialog('insert_product').$obj.data('type', 'slideshow')
+                if ($(this).closest('.product').hasClass('itemSlide')) {
+                    $.dialog('insert_product').$obj.data('type', 'slideshow')
+                } else if ($(this).closest('.product').hasClass('itemList')) {
+                    $.dialog('insert_product').$obj.data('type', 'card')
+                }
                 // give time for reset
                 var $that = $(this);
                 setTimeout(function(){
@@ -643,34 +686,6 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 $wrapper.data('slide-index', si + 1);
                 return false;
             })
-            .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
-                var input = window.prompt('Please put youtube address');
-                if (input == null) {
-                    return;
-                }
-                var vid = parseVideo(input.trim());
-                if (vid.type === 'youtube') { // youtube.com
-                    var $videoElement = $(`<p class="article-media media-youtube" data-service="youtube" data-service-id="${vid.id}" style="text-align: center;"><iframe src="https://www.youtube.com/embed/${vid.id}" width="560" height="315" frameborder="0" allowfullscreen=""></iframe></p>`);
-                    var $place = this.$el.find('.medium-insert-active');
-                    if ($place.is('p')) {
-                        this.migrateExistingContent($place);
-                        $place.replaceWith('<div class="medium-insert-active">' + $place.html() + '</div>');
-                        $place = this.$el.find('.medium-insert-active');
-                        if ($place.next().is('p')) {
-                            this.moveCaret($place.next());
-                        } else {
-                            $place.after('<p><br></p>'); // add empty paragraph so we can move the caret to the next line.
-                            this.moveCaret($place.next());
-                        }
-                        $place.replaceWith($videoElement);
-                        window.EditorControl.refresh();
-                    }
-                    return;
-                } else {
-                    window.alert('Video service other than youtube is not supported.');
-                    return;
-                }
-            }).bind(this))
             // product card
             .on('click', 'ul.itemList .itemListElement .remove', function(){
                 var $wrapper = $(this).closest('.product');
@@ -710,15 +725,13 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     $li.remove();
                 }
             })
-            .on('click', '.itemSlide .delete-slideshow', function(){
-                $(this).closest('.itemSlide').remove();
+            .on('click', '.product .delete-slideshow', function(){
+                $(this).closest('.product').remove();
             })
-            .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
-                this.$el.find('.add_option_tools').hide();
-            }).bind(this))
-            .on('paste', '.medium-insert-caption-placeholder', function (e) {
-                $.proxy(that, 'removeCaptionPlaceholder')($(e.target));
-            });
+            /*
+            Whitelabel V2 Stuff END
+            */
+        }
 
         $(window).on('resize', $.proxy(this, 'positionButtons', null));
     };
