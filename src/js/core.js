@@ -345,8 +345,11 @@
             });
 
             // toggle button
-            this.positionButtons();
-            this.showButtons();
+            setTimeout(function(t) {
+                t.clean();
+                t.positionButtons();
+                t.showButtons()
+            }, 350, this);
         } // if whitelabel v2 end
     };
 
@@ -386,7 +389,6 @@
             .on('dragover drop', function (e) {
                 e.preventDefault();
             })
-            .on('keyup click', $.proxy(this, 'toggleButtons'))
             .on('selectstart mousedown', '.medium-insert, .medium-insert-buttons', $.proxy(this, 'disableSelection'))
             .on('click', '.medium-insert-buttons-show', $.proxy(this, 'toggleAddons'))
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
@@ -601,10 +603,12 @@
             })
             .on('click', '.product .delete-slideshow', function(){
                 $(this).closest('.product').remove();
-            })
+            });
             /*
             Whitelabel V2 Stuff END
             */
+        } else {
+            this.$el.on('keyup click', $.proxy(this, 'toggleButtons'));
         }
 
         $(window).on('resize', $.proxy(this, 'positionButtons', null));
@@ -962,6 +966,7 @@
      */
 
     Core.prototype.hideButtons = function ($el) {
+        return; // #ARTICLE_MOD
         $el = $el || this.$el;
 
         $el.find('.medium-insert-buttons').hide();
