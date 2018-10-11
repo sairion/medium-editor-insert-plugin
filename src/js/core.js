@@ -348,8 +348,11 @@
             setTimeout(function(t) {
                 t.clean();
                 t.positionButtons();
-                t.showButtons()
-            }, 350, this);
+                t.showButtons();
+                if (t.$el.find('p:first').text().trim() === '') {
+                    t.$el.find('p:first').addClass('medium-insert-active')
+                }
+            }, 50, this);
         } // if whitelabel v2 end
     };
 
@@ -389,6 +392,7 @@
             .on('dragover drop', function (e) {
                 e.preventDefault();
             })
+            .on('keyup click focusout', $.proxy(this, 'toggleButtons'))
             .on('selectstart mousedown', '.medium-insert, .medium-insert-buttons', $.proxy(this, 'disableSelection'))
             .on('click', '.medium-insert-buttons-show', $.proxy(this, 'toggleAddons'))
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
@@ -608,7 +612,6 @@
             Whitelabel V2 Stuff END
             */
         } else {
-            this.$el.on('keyup click', $.proxy(this, 'toggleButtons'));
         }
 
         $(window).on('resize', $.proxy(this, 'positionButtons', null));
@@ -903,8 +906,15 @@
 
         this.clean();
 
-        if ($el.hasClass('medium-editor-placeholder') === false && $el.closest('.medium-insert-buttons').length === 0 && $current.closest('.medium-insert-buttons').length === 0) {
+        // console.log($el.hasClass('medium-editor-placeholder') === false)
+        // console.log($el.closest('.medium-insert-buttons').length === 0)
+        // console.log($current.closest('.medium-insert-buttons').length === 0)
+        
+        if (
+            $el.hasClass('medium-editor-placeholder') === false &&
+            $el.closest('.medium-insert-buttons').length === 0 && $current.closest('.medium-insert-buttons').length === 0) {
 
+            console.log('inside')
             this.$el.find('.medium-insert-active').removeClass('medium-insert-active');
 
             $.each(this.options.addons, function (addon) {
