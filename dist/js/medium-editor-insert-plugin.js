@@ -34,7 +34,7 @@ this["MediumInsert"] = this["MediumInsert"] || {};
 this["MediumInsert"]["Templates"] = this["MediumInsert"]["Templates"] || {};
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-buttons-gear.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"add_option medium-insert-buttons whitelabel-gear\" contenteditable=\"false\">\n  <small class=\"add_option_tools\" style=\"display: none;\">\n    <span class=\"insert-option\" style=\"display: block;\">\n      <label class=\"label\">INSERT</label>\n      <a class=\"insert-action-text\">\n        <i></i> Text</a>\n      <a class=\"insert-action-image\">\n        <i></i> Images</a>\n      <a class=\"insert-action-product\">\n        <i></i> Products</a>\n    </span>\n    <span class=\"insert-text\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">TEXT</a>\n      <a class=\"insert-action-text-body\">\n        <i></i> Body</a>\n      <a class=\"insert-action-text-quote\">\n        <i></i> Quote</a>\n    </span>\n    <span class=\"insert-image\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">IMAGE</a>\n      <a class=\"insert-action-image-single medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"single\">\n        <i></i> Single</a>\n      <a class=\"insert-action-image-slideshow medium-insert-action gallery-insert-action\">\n        <i></i> Slideshow</a>\n      <a class=\"insert-action-image-grid medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-meta='{ \"type\": \"grid\" }'>\n        <i></i> Grid</a>\n    </span>\n    <span class=\"insert-product\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">PRODUCT</a>\n      <a class=\"insert-action-product-card\">\n        <i></i> Cards</a>\n      <a class=\"insert-action-product-slideshow\">\n        <i></i> Slideshow</a>\n    </span>\n    <span class=\"editable_tools\" style=\"display:none;\">\n      <label class=\"label\">IMAGE STYLE</label>\n      <a class=\"edit_full\">\n        <i></i>\n      </a>\n      <a class=\"edit_normal\">\n        <i></i>\n      </a>\n      <a class=\"edit_with_quote\">\n        <i></i>\n      </a>\n    </span>\n  </small>\n  <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
+    return "<div class=\"add_option medium-insert-buttons whitelabel-gear\" contenteditable=\"false\">\n  <small class=\"add_option_tools\" style=\"display: none;\">\n    <span class=\"insert-option\" style=\"display: block;\">\n      <label class=\"label\">INSERT</label>\n      <a class=\"insert-action-text\">\n        <i></i> Text</a>\n      <a class=\"insert-action-image\">\n        <i></i> Images</a>\n      <a class=\"insert-action-product\">\n        <i></i> Products</a>\n    </span>\n    <span class=\"insert-text\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">TEXT</a>\n      <a class=\"insert-action-text-body\">\n        <i></i> Body</a>\n      <a class=\"insert-action-text-quote\">\n        <i></i> Quote</a>\n    </span>\n    <span class=\"insert-image\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">IMAGE</a>\n      <a class=\"insert-action-image-single medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-image-insert-type=\"single\">\n        <i></i> Single</a>\n      <a class=\"insert-action-image-slideshow gallery-insert-action\">\n        <i></i> Slideshow</a>\n      <a class=\"insert-action-image-grid medium-insert-action\" data-addon=\"images\" data-action=\"add\" data-meta='{ \"type\": \"grid\" }'>\n        <i></i> Grid</a>\n    </span>\n    <span class=\"insert-product\" style=\"display: none;\">\n      <a href=\"#\" class=\"label\">PRODUCT</a>\n      <a class=\"insert-action-product-card\">\n        <i></i> Cards</a>\n      <a class=\"insert-action-product-slideshow\">\n        <i></i> Slideshow</a>\n    </span>\n    <span class=\"editable_tools\" style=\"display:none;\">\n      <label class=\"label\">IMAGE STYLE</label>\n      <a class=\"edit_full\">\n        <i></i>\n      </a>\n      <a class=\"edit_normal\">\n        <i></i>\n      </a>\n      <a class=\"edit_with_quote\">\n        <i></i>\n      </a>\n    </span>\n  </small>\n  <button class=\"medium-insert-buttons-show show_option\" type=\"button\"></button>\n</div>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/core-buttons.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -95,6 +95,18 @@ this["MediumInsert"]["Templates"]["src/js/templates/embeds-wrapper.hbs"] = Handl
 
 this["MediumInsert"]["Templates"]["src/js/templates/images-fileupload.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<input type=\"file\" multiple>";
+},"useData":true});
+
+this["MediumInsert"]["Templates"]["src/js/templates/images-grid-each.hbs"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
+    return "        <div class=\"medium-insert-images-progress\"></div>\n";
+},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {});
+
+  return "<div class=\"grid\">\n    <img src=\"/_ui/images/common/blank.gif\" alt=\"\" class=\"\" style=\"background-image:url('"
+    + container.escapeExpression(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
+    + "');\">\n    <a href=\"#\" class=\"remove\">Remove</a>\n    <figcaption contenteditable=\"true\" class=\"medium-insert-caption-placeholder text-placeholder\" data-placeholder=\"Type caption for image (optional)\"></figcaption>\n"
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.progress : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "</div>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/images-image.hbs"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
@@ -475,8 +487,17 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 t.clean();
                 t.positionButtons();
                 t.showButtons();
-                if (t.$el.find('p:first').text().trim() === '') {
-                    t.$el.find('p:first').addClass('medium-insert-active')
+                if (t.$el.find('.medium-insert-active').length === 0) {
+                    var activeInsertAdded = false;
+                    t.$el.find('> p').each(function(i, e) {
+                        if (activeInsertAdded) {
+                            return
+                        }
+                        if ($(e).text().trim() === '') {
+                            $(e).addClass('medium-insert-active')
+                            activeInsertAdded = true
+                        }
+                    });
                 }
             }, 50, this);
         } // if whitelabel v2 end
@@ -992,7 +1013,11 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
         if (this.$el.find('.medium-insert-buttons').length === 0) {
             var buttons = this.getButtons();
             if (this.$el.find('.gallery-container').length > 0) {
-                buttons = $(buttons).find('.gallery-insert-action').hide().end().prop('outerHTML');
+                buttons = $(buttons);
+                if (!window.isWhitelabelV2) {
+                    buttons.find('.gallery-insert-action').hide().end()
+                }
+                buttons = buttons.prop('outerHTML');
             } else {
                 buttons = $(buttons).find('.gallery-insert-action').css('display', 'block').end().prop('outerHTML');
             }
@@ -1040,7 +1065,6 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             $el.hasClass('medium-editor-placeholder') === false &&
             $el.closest('.medium-insert-buttons').length === 0 && $current.closest('.medium-insert-buttons').length === 0) {
 
-            console.log('inside')
             this.$el.find('.medium-insert-active').removeClass('medium-insert-active');
 
             $.each(this.options.addons, function (addon) {
@@ -2072,7 +2096,8 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
 var ImageModes = {
     Full: 'Full',
     Normal: 'Normal',
-    Quoted: 'Quoted'
+    Quoted: 'Quoted',
+    Grid: 'Grid',
 };
 var ImageModesEditClasses = {
     Full: 'edit_full',
@@ -2083,6 +2108,7 @@ var ImageModesClasses = {
     Full: 'mode-full',
     Normal: 'mode-normal',
     Quoted: 'mode-quoted',
+    Grid: 'mode-grid',
 };
 var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
@@ -2588,25 +2614,51 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
         // If preview is allowed and preview image already exists,
         // replace it with uploaded image
         that = this;
+        var isGrid = (this.options.autoGrid && $place.find('figure').length >= this.options.autoGrid) || this.meta && this.meta.type === 'grid';
+
         if (this.options.preview && data.context) {
             domImage = this.getDOMImage();
-            domImage.onload = function () {
-                data.context.find('img').attr('src', domImage.src);
+            domImage.onload = (function () {
+                var attr;
+                if (isGrid) {
+                    attr = 'data-src'
+                } else {
+                    attr = 'src'
+                }
+                data.context.find('img').attr(attr, img);
 
                 if (this.options.uploadCompleted) {
                     this.options.uploadCompleted(data.context, data);
                 }
 
                 that.core.triggerInput();
-            }.bind(this);
-            domImage.src = img;
+            }).bind(this);
+            if (isGrid) {
+                domImage.src = window.blankUrl;
+                $(domImage).css('background-image', 'url(' + img + ')');
+            } else {
+                domImage.src = img;
+            }
         } else {
-            var expanded = $(this.templates['src/js/templates/images-image.hbs']({
-                img: img,
-                progress: this.options.preview
-            }));
-            data.context = expanded.appendTo($place);
-            data.context.attr('data-mode', ImageModes.Normal);
+            var expanded;
+            if (isGrid) {
+                expanded = $(this.templates['src/js/templates/images-grid-each.hbs']({
+                    img: img,
+                    progress: this.options.preview
+                }));
+                if ($place.find('figure').length === 0) {
+                    $place.append('<figure />')
+                }
+                data.context = expanded.appendTo($place.find('figure'));
+                $place.find('figure').attr('data-mode', ImageModes.Grid);
+            } else {
+                expanded = $(this.templates['src/js/templates/images-image.hbs']({
+                    img: img,
+                    progress: this.options.preview
+                }));
+                data.context = expanded.appendTo($place);
+                data.context.attr('data-mode', ImageModes.Normal);
+            }
 
             var $img = data.context.find('img');
             if (additionals && additionals.uiid) {
@@ -2615,11 +2667,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
             $place.find('br').remove();
 
-            // Trigger grid
-            if (
-                (this.options.autoGrid && $place.find('figure').length >= this.options.autoGrid) ||
-                false
-            ) {
+            if (isGrid) {
                 $.each(this.options.styles, function (style, options) {
                     var className = 'medium-insert-images-' + style;
 
@@ -2630,7 +2678,9 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                     }
                 });
 
-                $place.addClass('medium-insert-images-grid');
+                if (!window.isWhitelabelV2) {
+                    $place.addClass('medium-insert-images-grid');
+                }
 
                 if (this.options.styles.grid.added) {
                     this.options.styles.grid.added($place);
@@ -2663,10 +2713,10 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
     Images.prototype.selectImage = function (e) {
         var that = this,
             $image;
-
+        
         if (this.core.options.enabled) {
             $image = $(e.target);
-
+            var isGrid = $image.closest('.grid').length > 0;
             this.$currentImage = $image;
 
             // Hide keyboard on mobile devices
@@ -2674,13 +2724,25 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
             $image.addClass('medium-insert-image-active');
             $image.closest('.medium-insert-images').addClass('medium-insert-active');
-            $(`<a href="#" class="remove">Remove</a>`).insertAfter($image)
+
+            if (!isGrid) {
+                $(`<a href="#" class="remove">Remove</a>`).insertAfter($image)
+            }   
 
             setTimeout(function () {
-                that.addToolbar();
+                if (isGrid) {
+                    if (that.options.captions) {
+                        var $gridEach = $image.closest('div.grid');
+                        // if ($gridEach.find('figcaption').length === 0) {
+                        //     $gridEach.append('<figcaption contenteditable="true" class="medium-insert-caption-placeholder text-placeholder" data-placeholder="Type caption for image (optional)" />')
+                        // }
+                    }
+                } else {
+                    that.addToolbar();
 
-                if (that.options.captions && getImageMode(that.$currentImage) !== ImageModes.Quoted) {
-                    that.core.addCaption($image.closest('figure'), that.options.captionPlaceholder);
+                    if (that.options.captions && getImageMode(that.$currentImage) !== ImageModes.Quoted) {
+                        that.core.addCaption($image.closest('figure'), that.options.captionPlaceholder);
+                    }
                 }
             }, 50);
         }
@@ -2825,6 +2887,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      */
 
     Images.prototype.addToolbar = function () {
+        console.log('addToolbar')
         var $image = this.$el.find('.medium-insert-image-active'),
             $p = $image.closest('.medium-insert-images'),
             active = false,

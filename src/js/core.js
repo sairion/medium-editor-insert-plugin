@@ -349,8 +349,17 @@
                 t.clean();
                 t.positionButtons();
                 t.showButtons();
-                if (t.$el.find('p:first').text().trim() === '') {
-                    t.$el.find('p:first').addClass('medium-insert-active')
+                if (t.$el.find('.medium-insert-active').length === 0) {
+                    var activeInsertAdded = false;
+                    t.$el.find('> p').each(function(i, e) {
+                        if (activeInsertAdded) {
+                            return
+                        }
+                        if ($(e).text().trim() === '') {
+                            $(e).addClass('medium-insert-active')
+                            activeInsertAdded = true
+                        }
+                    });
                 }
             }, 50, this);
         } // if whitelabel v2 end
@@ -866,7 +875,11 @@
         if (this.$el.find('.medium-insert-buttons').length === 0) {
             var buttons = this.getButtons();
             if (this.$el.find('.gallery-container').length > 0) {
-                buttons = $(buttons).find('.gallery-insert-action').hide().end().prop('outerHTML');
+                buttons = $(buttons);
+                if (!window.isWhitelabelV2) {
+                    buttons.find('.gallery-insert-action').hide().end()
+                }
+                buttons = buttons.prop('outerHTML');
             } else {
                 buttons = $(buttons).find('.gallery-insert-action').css('display', 'block').end().prop('outerHTML');
             }
@@ -914,7 +927,6 @@
             $el.hasClass('medium-editor-placeholder') === false &&
             $el.closest('.medium-insert-buttons').length === 0 && $current.closest('.medium-insert-buttons').length === 0) {
 
-            console.log('inside')
             this.$el.find('.medium-insert-active').removeClass('medium-insert-active');
 
             $.each(this.options.addons, function (addon) {

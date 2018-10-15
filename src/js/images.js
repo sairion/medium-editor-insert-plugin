@@ -4,7 +4,8 @@
 var ImageModes = {
     Full: 'Full',
     Normal: 'Normal',
-    Quoted: 'Quoted'
+    Quoted: 'Quoted',
+    Grid: 'Grid',
 };
 var ImageModesEditClasses = {
     Full: 'edit_full',
@@ -15,6 +16,7 @@ var ImageModesClasses = {
     Full: 'mode-full',
     Normal: 'mode-normal',
     Quoted: 'mode-quoted',
+    Grid: 'mode-grid',
 };
 var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
@@ -520,25 +522,51 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
         // If preview is allowed and preview image already exists,
         // replace it with uploaded image
         that = this;
+        var isGrid = (this.options.autoGrid && $place.find('figure').length >= this.options.autoGrid) || this.meta && this.meta.type === 'grid';
+
         if (this.options.preview && data.context) {
             domImage = this.getDOMImage();
-            domImage.onload = function () {
-                data.context.find('img').attr('src', domImage.src);
+            domImage.onload = (function () {
+                var attr;
+                if (isGrid) {
+                    attr = 'data-src'
+                } else {
+                    attr = 'src'
+                }
+                data.context.find('img').attr(attr, img);
 
                 if (this.options.uploadCompleted) {
                     this.options.uploadCompleted(data.context, data);
                 }
 
                 that.core.triggerInput();
-            }.bind(this);
-            domImage.src = img;
+            }).bind(this);
+            if (isGrid) {
+                domImage.src = window.blankUrl;
+                $(domImage).css('background-image', 'url(' + img + ')');
+            } else {
+                domImage.src = img;
+            }
         } else {
-            var expanded = $(this.templates['src/js/templates/images-image.hbs']({
-                img: img,
-                progress: this.options.preview
-            }));
-            data.context = expanded.appendTo($place);
-            data.context.attr('data-mode', ImageModes.Normal);
+            var expanded;
+            if (isGrid) {
+                expanded = $(this.templates['src/js/templates/images-grid-each.hbs']({
+                    img: img,
+                    progress: this.options.preview
+                }));
+                if ($place.find('figure').length === 0) {
+                    $place.append('<figure />')
+                }
+                data.context = expanded.appendTo($place.find('figure'));
+                $place.find('figure').attr('data-mode', ImageModes.Grid);
+            } else {
+                expanded = $(this.templates['src/js/templates/images-image.hbs']({
+                    img: img,
+                    progress: this.options.preview
+                }));
+                data.context = expanded.appendTo($place);
+                data.context.attr('data-mode', ImageModes.Normal);
+            }
 
             var $img = data.context.find('img');
             if (additionals && additionals.uiid) {
@@ -547,11 +575,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
             $place.find('br').remove();
 
-            // Trigger grid
-            if (
-                (this.options.autoGrid && $place.find('figure').length >= this.options.autoGrid) ||
-                false
-            ) {
+            if (isGrid) {
                 $.each(this.options.styles, function (style, options) {
                     var className = 'medium-insert-images-' + style;
 
@@ -562,7 +586,9 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                     }
                 });
 
-                $place.addClass('medium-insert-images-grid');
+                if (!window.isWhitelabelV2) {
+                    $place.addClass('medium-insert-images-grid');
+                }
 
                 if (this.options.styles.grid.added) {
                     this.options.styles.grid.added($place);
@@ -595,10 +621,10 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
     Images.prototype.selectImage = function (e) {
         var that = this,
             $image;
-
+        
         if (this.core.options.enabled) {
             $image = $(e.target);
-
+            var isGrid = $image.closest('.grid').length > 0;
             this.$currentImage = $image;
 
             // Hide keyboard on mobile devices
@@ -606,13 +632,25 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
             $image.addClass('medium-insert-image-active');
             $image.closest('.medium-insert-images').addClass('medium-insert-active');
-            $(`<a href="#" class="remove">Remove</a>`).insertAfter($image)
+
+            if (!isGrid) {
+                $(`<a href="#" class="remove">Remove</a>`).insertAfter($image)
+            }   
 
             setTimeout(function () {
-                that.addToolbar();
+                if (isGrid) {
+                    if (that.options.captions) {
+                        var $gridEach = $image.closest('div.grid');
+                        // if ($gridEach.find('figcaption').length === 0) {
+                        //     $gridEach.append('<figcaption contenteditable="true" class="medium-insert-caption-placeholder text-placeholder" data-placeholder="Type caption for image (optional)" />')
+                        // }
+                    }
+                } else {
+                    that.addToolbar();
 
-                if (that.options.captions && getImageMode(that.$currentImage) !== ImageModes.Quoted) {
-                    that.core.addCaption($image.closest('figure'), that.options.captionPlaceholder);
+                    if (that.options.captions && getImageMode(that.$currentImage) !== ImageModes.Quoted) {
+                        that.core.addCaption($image.closest('figure'), that.options.captionPlaceholder);
+                    }
                 }
             }, 50);
         }
@@ -757,6 +795,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      */
 
     Images.prototype.addToolbar = function () {
+        console.log('addToolbar')
         var $image = this.$el.find('.medium-insert-image-active'),
             $p = $image.closest('.medium-insert-images'),
             active = false,
