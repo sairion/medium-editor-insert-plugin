@@ -407,7 +407,106 @@
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
             .on('click', '.gallery-insert-action', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
-                window.gallery.renderTo($place);
+                // from Images.prototype.add()
+                var $file = $('<input type="file" multiple />');
+                $file.on('change', function() {
+                    console.log('change');
+                    var files = [].slice.call($file.get(0).files);
+                    Promise.all(
+                        files.map(file =>
+                            new Promise(function(res, rej){ 
+                                const formData = new FormData();
+                                formData.append('file', file);
+                                $.ajax({
+                                    url: '/_admin/image-upload-add.json',
+                                    processData: false,
+                                    contentType: false,
+                                    type: 'POST',
+                                    data: formData,
+                                })
+                                .done((image) => {
+                                    console.log('done');
+                                    res(image);
+                                })
+                                .fail(jqxhr => {
+                                    alert('[Gallery] : addimage fail', jqxhr.responseText);
+                                    res();
+                                });
+                            })
+                        )
+                    ).then((nextImages) => {
+                        console.log('$place', $place);
+                        window.gallery.renderTo($place, null, function() {
+                            console.log('addImages');
+                            window.gallery.instance.addImages(nextImages.filter(e => e));
+                        });
+                        // gallery.instance.addImages(nextImages);
+                        // this.toggleLoading(false);
+                        // this.toggleAdding(false);
+                    }).catch(() => {
+                        // this.toggleLoading(false);
+                        // this.toggleAdding(false);
+                    });
+                });
+                $file.click();
+
+                // var currentLen = 0;
+                // var shouldFullfillLen = 0;
+                // var successImages = [];
+                // var files = null;
+                function doAfterResponse() {
+                    // currentLen += 1
+                    // if (currentLen === shouldFullfillLen) {
+                        window.gallery.renderTo($place, null, function() {
+                            window.gallery.instance.addImages(successImages);
+                        })
+                    // }
+                }
+
+                // $file.fileupload({ // See https://github.com/blueimp/jQuery-File-Upload/wiki/Options
+                //     url: '/_admin/image-upload-add.json',
+                //     type: 'POST',
+                //     dataType: 'json',
+                //     formData(form) {
+                //         if (files == null) {
+                //             files = [].slice.call($file.get(0).files)
+                //         }
+                //         if (shouldFullfillLen === 0) {
+                //             shouldFullfillLen = files.length;
+                //         }
+                //         var file = files.pop();
+                //         return [{
+                //             name: 'file',
+                //             value: file
+                //         }]
+                //     },
+                //     add: function(e, data) {
+                //         var that = this,
+                //             uploadErrors = [],
+                //             file = data.files[0],
+                //             acceptFileTypes = /(\.|\/)(gif|jpe?g|png)$/i;
+                //             // maxFileSize = this.options.fileUploadOptions.maxFileSize
+
+                //         if (acceptFileTypes && !acceptFileTypes.test(file.type)) {
+                //             uploadErrors.push('This file is not in a supported format: ' + file.name);
+                //         // } else if (maxFileSize && file.size > maxFileSize) {
+                //         //     uploadErrors.push('This file is too big: ' + file.name);
+                //         }
+                //         if (uploadErrors.length > 0) {
+                //             console.log(uploadErrors.join("\n"));
+                //             return;
+                //         }
+                //         data.submit();
+                //     },
+                //     done: function (e, data) {
+                //         successImages.push(data)
+                //         doAfterResponse();
+                //     },
+                //     fail: function() {
+                //         doAfterResponse();
+                //     }
+                // });
+
             }).bind(this))
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
                 var input = window.prompt('Please put youtube address');
