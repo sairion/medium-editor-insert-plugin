@@ -68,11 +68,13 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-fileupload.hbs"] = Ha
 this["MediumInsert"]["Templates"]["src/js/templates/images-grid-each.hbs"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     return "        <div class=\"medium-insert-images-progress\"></div>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {});
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"grid\">\n    <img src=\"/_ui/images/common/blank.gif\" alt=\"\" class=\"\" style=\"background-image:url('"
-    + container.escapeExpression(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
-    + "');\">\n    <a href=\"#\" class=\"remove\">Remove</a>\n    <figcaption contenteditable=\"true\" class=\"medium-insert-caption-placeholder text-placeholder\" data-placeholder=\"Type caption for image (optional)\"></figcaption>\n"
+  return "<div class=\"grid\">\n    <img src=\"/_ui/images/common/blank.gif\" data-src=\""
+    + alias4(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
+    + "\" alt=\"\" class=\"\" style=\"background-image:url('"
+    + alias4(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
+    + "');\">\n    <a href=\"#\" class=\"remove\">Remove</a>\n    <a href=\"#\" class=\"btn-caption\">Add Caption</a>\n    <figcaption contenteditable=\"true\" class=\"text-placeholder\" data-placeholder=\"Type caption for image (optional)\"></figcaption>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.progress : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "</div>\n";
 },"useData":true});

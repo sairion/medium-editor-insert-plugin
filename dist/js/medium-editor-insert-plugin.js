@@ -100,11 +100,13 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-fileupload.hbs"] = Ha
 this["MediumInsert"]["Templates"]["src/js/templates/images-grid-each.hbs"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     return "        <div class=\"medium-insert-images-progress\"></div>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {});
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"grid\">\n    <img src=\"/_ui/images/common/blank.gif\" alt=\"\" class=\"\" style=\"background-image:url('"
-    + container.escapeExpression(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
-    + "');\">\n    <a href=\"#\" class=\"remove\">Remove</a>\n    <figcaption contenteditable=\"true\" class=\"medium-insert-caption-placeholder text-placeholder\" data-placeholder=\"Type caption for image (optional)\"></figcaption>\n"
+  return "<div class=\"grid\">\n    <img src=\"/_ui/images/common/blank.gif\" data-src=\""
+    + alias4(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
+    + "\" alt=\"\" class=\"\" style=\"background-image:url('"
+    + alias4(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
+    + "');\">\n    <a href=\"#\" class=\"remove\">Remove</a>\n    <a href=\"#\" class=\"btn-caption\">Add Caption</a>\n    <figcaption contenteditable=\"true\" class=\"text-placeholder\" data-placeholder=\"Type caption for image (optional)\"></figcaption>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.progress : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "</div>\n";
 },"useData":true});
@@ -545,106 +547,14 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
             .on('click', '.gallery-insert-action', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
-                // from Images.prototype.add()
-                var $file = $('<input type="file" multiple />');
-                $file.on('change', function() {
-                    console.log('change');
-                    var files = [].slice.call($file.get(0).files);
-                    Promise.all(
-                        files.map(file =>
-                            new Promise(function(res, rej){ 
-                                const formData = new FormData();
-                                formData.append('file', file);
-                                $.ajax({
-                                    url: '/_admin/image-upload-add.json',
-                                    processData: false,
-                                    contentType: false,
-                                    type: 'POST',
-                                    data: formData,
-                                })
-                                .done((image) => {
-                                    console.log('done');
-                                    res(image);
-                                })
-                                .fail(jqxhr => {
-                                    alert('[Gallery] : addimage fail', jqxhr.responseText);
-                                    res();
-                                });
-                            })
-                        )
-                    ).then((nextImages) => {
-                        console.log('$place', $place);
-                        window.gallery.renderTo($place, null, function() {
-                            console.log('addImages');
-                            window.gallery.instance.addImages(nextImages.filter(e => e));
-                        });
-                        // gallery.instance.addImages(nextImages);
-                        // this.toggleLoading(false);
-                        // this.toggleAdding(false);
-                    }).catch(() => {
-                        // this.toggleLoading(false);
-                        // this.toggleAdding(false);
+                window.gallery.uploadImages(function(nextImages) {
+                    if (nextImages === false) {
+                        alert('Failed to upload images, please try again'); return;
+                    } 
+                    window.gallery.renderTo($place, null, function() {
+                        window.gallery.instance.addImages(nextImages.filter(e => e));
                     });
-                });
-                $file.click();
-
-                // var currentLen = 0;
-                // var shouldFullfillLen = 0;
-                // var successImages = [];
-                // var files = null;
-                function doAfterResponse() {
-                    // currentLen += 1
-                    // if (currentLen === shouldFullfillLen) {
-                        window.gallery.renderTo($place, null, function() {
-                            window.gallery.instance.addImages(successImages);
-                        })
-                    // }
-                }
-
-                // $file.fileupload({ // See https://github.com/blueimp/jQuery-File-Upload/wiki/Options
-                //     url: '/_admin/image-upload-add.json',
-                //     type: 'POST',
-                //     dataType: 'json',
-                //     formData(form) {
-                //         if (files == null) {
-                //             files = [].slice.call($file.get(0).files)
-                //         }
-                //         if (shouldFullfillLen === 0) {
-                //             shouldFullfillLen = files.length;
-                //         }
-                //         var file = files.pop();
-                //         return [{
-                //             name: 'file',
-                //             value: file
-                //         }]
-                //     },
-                //     add: function(e, data) {
-                //         var that = this,
-                //             uploadErrors = [],
-                //             file = data.files[0],
-                //             acceptFileTypes = /(\.|\/)(gif|jpe?g|png)$/i;
-                //             // maxFileSize = this.options.fileUploadOptions.maxFileSize
-
-                //         if (acceptFileTypes && !acceptFileTypes.test(file.type)) {
-                //             uploadErrors.push('This file is not in a supported format: ' + file.name);
-                //         // } else if (maxFileSize && file.size > maxFileSize) {
-                //         //     uploadErrors.push('This file is too big: ' + file.name);
-                //         }
-                //         if (uploadErrors.length > 0) {
-                //             console.log(uploadErrors.join("\n"));
-                //             return;
-                //         }
-                //         data.submit();
-                //     },
-                //     done: function (e, data) {
-                //         successImages.push(data)
-                //         doAfterResponse();
-                //     },
-                //     fail: function() {
-                //         doAfterResponse();
-                //     }
-                // });
-
+                })
             }).bind(this))
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
                 var input = window.prompt('Please put youtube address');
@@ -2465,9 +2375,51 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                     }
                 }
             })
-            //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
-            //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
-            //.on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
+            .on('click', '.medium-insert-images .grid .btn-caption', function(e) {
+                var epochId = 'gridimage-' + String(+new Date);
+                var popup = $.dialog('insert_caption');
+                var $grid = $(this).closest('.grid');
+                $grid.attr('id', epochId);
+                var src = $grid.find('img').attr('data-src');
+                popup.$obj.find('.figure img').attr('src', src);
+                popup.$obj.data('workingImage', epochId);
+                var caption = $grid.find('figcaption').text();
+                popup.$obj.find('textarea').val(caption);
+                popup.$obj.data('original', caption);
+                popup.open();
+                return false;
+            })
+            .on('click', '.popup.insert_caption .btn-save', function() {
+                var popup = $.dialog('insert_caption');
+                var epochId = popup.$obj.data('workingImage');
+                var original = popup.$obj.data('original');
+                var next = popup.$obj.find('textarea').val();
+                var $wrapper = $('#' + epochId);
+                var $cap = $wrapper.find('figcaption');
+                if (next !== original) {
+                    if ($cap.length === 0) {
+                        $cap = $('<figcaption contenteditable="true" class="text-placeholder" data-placeholder="Type caption for image (optional)" />');
+                        $wrapper.append($cap);
+                    }
+                    $cap.text(next);
+                }
+                if ($cap.text() !== '') {
+                    $wrapper.find('.btn-caption').text('Edit Caption');
+                } else {
+                    $wrapper.find('.btn-caption').text('Add Caption');
+                }
+                popup.close();
+                return false;
+            })
+            .on('click', '.popup.insert_caption .btn-remove', function() {
+                var popup = $.dialog('insert_caption');
+                var epochId = popup.$obj.data('workingImage');
+                var $wrapper = $('#' + epochId);
+                $wrapper.find('figcaption').text('')
+                $wrapper.find('.btn-caption').text('Add Caption');
+                popup.close();
+                return false;
+            })
         this.$el
             .on('click', '.medium-insert-images img', $.proxy(this, 'selectImage'));
 

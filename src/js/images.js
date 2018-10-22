@@ -274,9 +274,51 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                     }
                 }
             })
-            //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
-            //.on('click', '.medium-insert-images-toolbar .medium-editor-action', $.proxy(this, 'toolbarAction'))
-            //.on('click', '.medium-insert-images-toolbar2 .medium-editor-action', $.proxy(this, 'toolbar2Action'));
+            .on('click', '.medium-insert-images .grid .btn-caption', function(e) {
+                var epochId = 'gridimage-' + String(+new Date);
+                var popup = $.dialog('insert_caption');
+                var $grid = $(this).closest('.grid');
+                $grid.attr('id', epochId);
+                var src = $grid.find('img').attr('data-src');
+                popup.$obj.find('.figure img').attr('src', src);
+                popup.$obj.data('workingImage', epochId);
+                var caption = $grid.find('figcaption').text();
+                popup.$obj.find('textarea').val(caption);
+                popup.$obj.data('original', caption);
+                popup.open();
+                return false;
+            })
+            .on('click', '.popup.insert_caption .btn-save', function() {
+                var popup = $.dialog('insert_caption');
+                var epochId = popup.$obj.data('workingImage');
+                var original = popup.$obj.data('original');
+                var next = popup.$obj.find('textarea').val();
+                var $wrapper = $('#' + epochId);
+                var $cap = $wrapper.find('figcaption');
+                if (next !== original) {
+                    if ($cap.length === 0) {
+                        $cap = $('<figcaption contenteditable="true" class="text-placeholder" data-placeholder="Type caption for image (optional)" />');
+                        $wrapper.append($cap);
+                    }
+                    $cap.text(next);
+                }
+                if ($cap.text() !== '') {
+                    $wrapper.find('.btn-caption').text('Edit Caption');
+                } else {
+                    $wrapper.find('.btn-caption').text('Add Caption');
+                }
+                popup.close();
+                return false;
+            })
+            .on('click', '.popup.insert_caption .btn-remove', function() {
+                var popup = $.dialog('insert_caption');
+                var epochId = popup.$obj.data('workingImage');
+                var $wrapper = $('#' + epochId);
+                $wrapper.find('figcaption').text('')
+                $wrapper.find('.btn-caption').text('Add Caption');
+                popup.close();
+                return false;
+            })
         this.$el
             .on('click', '.medium-insert-images img', $.proxy(this, 'selectImage'));
 
