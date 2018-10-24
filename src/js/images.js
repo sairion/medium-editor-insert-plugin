@@ -228,8 +228,13 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
             .on('keydown', $.proxy(this, 'removeImage'))
             .on('click', '.medium-insert-images.medium-insert-active .remove', (function(event) {
                 event.preventDefault();
-                var fig = $(event.currentTarget).closest('.medium-insert-images figure');
-                fig.remove();
+                var $this = $(event.currentTarget);
+                var $fig = $this.closest('.medium-insert-images figure');
+                if ($fig.attr('data-mode') === ImageModes.Grid) {
+                    $this.closest('.grid').remove();
+                } else {
+                    $fig.remove();
+                }
             }).bind(this))
             // Toolbar buttons.
             .on('click', '.medium-insert-images-toolbar .edit_full', (function(event) {
@@ -837,7 +842,6 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      */
 
     Images.prototype.addToolbar = function () {
-        console.log('addToolbar')
         var $image = this.$el.find('.medium-insert-image-active'),
             $p = $image.closest('.medium-insert-images'),
             active = false,
