@@ -279,6 +279,9 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                     }
                 }
             })
+            .on('load', '.popup.insert_caption .figure img', function() {
+                $.dialog('insert_caption').center();
+            })
             .on('click', '.medium-insert-images .grid .btn-caption', function(e) {
                 var epochId = 'gridimage-' + String(+new Date);
                 var popup = $.dialog('insert_caption');
