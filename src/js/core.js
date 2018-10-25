@@ -370,6 +370,11 @@
      *
      * @return {void}
      */
+    Core.prototype.resetOptionV2 = function resetOptionV2() {
+        $('.add_option').hide();
+        $('.add_option_tools .insert-product, .add_option_tools .insert-text, .add_option_tools .insert-image').hide();
+        $('.add_option .insert-option').show();
+    }
 
     Core.prototype.events = function () {
         var that = this;
@@ -391,11 +396,7 @@
             return $place;
         }
 
-        function resetOptionV2() {
-            $('.add_option').hide();
-            $('.add_option_tools .insert-product, .add_option_tools .insert-text, .add_option_tools .insert-image').hide();
-            $('.add_option .insert-option').show();
-        }
+        
 
         this.$el
             .on('dragover drop', function (e) {
@@ -413,6 +414,7 @@
                     } 
                     window.gallery.renderTo($place, null, function() {
                         window.gallery.instance.addImages(nextImages.filter(e => e));
+                        that.resetOptionV2();
                     });
                 })
             }).bind(this))
@@ -494,21 +496,24 @@
             })
             // add image options
             .on('click', '.insert-action-image-single', function(){ // #ARTICLE_MOD
+                that.resetOptionV2();
                 return false;
             })
             .on('click', '.insert-action-image-grid', function(){ // #ARTICLE_MOD
+                that.resetOptionV2();
                 return false;
             })
-            // .on('click', '.insert-action-image-slideshow', function(){ // #ARTICLE_MOD // delegated as .gallery-insert-action
-            //     return false;
-            // })
+            .on('click', '.insert-action-image-slideshow', function(){ // #ARTICLE_MOD
+                that.resetOptionV2();
+                return false;
+            })
             // add product card/slideshow
             .on('click', '.insert-action-product-card', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
                 $.dialog('insert_product').$obj.data('cursor', getAdjacentCursor($place));
                 $.dialog('insert_product').$obj.data('type', 'card');
                 $.dialog('insert_product').open();
-                resetOptionV2();
+                that.resetOptionV2();
                 return false;
             }).bind(this))
             .on('click', '.insert-action-product-slideshow', (function(){ // #ARTICLE_MOD
@@ -516,7 +521,7 @@
                 $.dialog('insert_product').$obj.data('cursor', getAdjacentCursor($place));
                 $.dialog('insert_product').$obj.data('type', 'slideshow');
                 $.dialog('insert_product').open();
-                resetOptionV2();
+                that.resetOptionV2();
                 return false;
             }).bind(this))
             .on('mouseover', '.product', function() {
