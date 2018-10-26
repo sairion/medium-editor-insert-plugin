@@ -293,6 +293,11 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 var caption = $grid.find('figcaption').text();
                 popup.$obj.find('textarea').val(caption);
                 popup.$obj.data('original', caption);
+                if (caption) {
+                    popup.$obj.find('.btn-remove').hide()
+                } else {
+                    popup.$obj.find('.btn-remove').show()
+                }
                 popup.open();
                 return false;
             })

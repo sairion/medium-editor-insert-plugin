@@ -102,11 +102,11 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-grid-each.hbs"] = Han
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"grid\">\n    <img src=\"/_ui/images/common/blank.gif\" data-src=\""
+  return "<div class=\"grid\" contenteditable=\"false\">\n    <img src=\"/_ui/images/common/blank.gif\" data-src=\""
     + alias4(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
     + "\" alt=\"\" class=\"\" style=\"background-image:url('"
     + alias4(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
-    + "');\">\n    <a href=\"#\" class=\"remove\">Remove</a>\n    <a href=\"#\" class=\"btn-caption\" contenteditable=\"false\">Add Caption</a>\n    <figcaption contenteditable=\"true\" class=\"text-placeholder\" data-placeholder=\"Type an image caption\"></figcaption>\n"
+    + "');\">\n    <a href=\"#\" class=\"remove\">Remove</a>\n    <a href=\"#\" class=\"btn-caption\">Add Caption</a>\n    <figcaption contenteditable=\"true\" class=\"text-placeholder\" data-placeholder=\"Type an image caption\"></figcaption>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.progress : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "</div>\n";
 },"useData":true});
@@ -516,6 +516,12 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
         $('.add_option .insert-option').show();
     }
 
+    Core.prototype.hideOptionPopupV2 = function hideOptionPopupV2() {
+        $('.add_option_tools').hide();
+        $('.add_option_tools .insert-product, .add_option_tools .insert-text, .add_option_tools .insert-image').hide();
+        $('.add_option .insert-option').show();
+    }
+
     Core.prototype.events = function () {
         var that = this;
 
@@ -554,7 +560,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     } 
                     window.gallery.renderTo($place, null, function() {
                         window.gallery.instance.addImages(nextImages.filter(e => e));
-                        that.resetOptionV2();
+                        that.hideOptionPopupV2();
                     });
                 })
             }).bind(this))
@@ -636,15 +642,15 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             })
             // add image options
             .on('click', '.insert-action-image-single', function(){ // #ARTICLE_MOD
-                that.resetOptionV2();
+                that.hideOptionPopupV2();
                 return false;
             })
             .on('click', '.insert-action-image-grid', function(){ // #ARTICLE_MOD
-                that.resetOptionV2();
+                that.hideOptionPopupV2();
                 return false;
             })
             .on('click', '.insert-action-image-slideshow', function(){ // #ARTICLE_MOD
-                that.resetOptionV2();
+                that.hideOptionPopupV2();
                 return false;
             })
             // add product card/slideshow
@@ -653,7 +659,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 $.dialog('insert_product').$obj.data('cursor', getAdjacentCursor($place));
                 $.dialog('insert_product').$obj.data('type', 'card');
                 $.dialog('insert_product').open();
-                that.resetOptionV2();
+                that.hideOptionPopupV2();
                 return false;
             }).bind(this))
             .on('click', '.insert-action-product-slideshow', (function(){ // #ARTICLE_MOD
@@ -661,7 +667,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 $.dialog('insert_product').$obj.data('cursor', getAdjacentCursor($place));
                 $.dialog('insert_product').$obj.data('type', 'slideshow');
                 $.dialog('insert_product').open();
-                that.resetOptionV2();
+                that.hideOptionPopupV2();
                 return false;
             }).bind(this))
             .on('mouseover', '.product', function() {
@@ -2399,6 +2405,11 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 var caption = $grid.find('figcaption').text();
                 popup.$obj.find('textarea').val(caption);
                 popup.$obj.data('original', caption);
+                if (caption) {
+                    popup.$obj.find('.btn-remove').hide()
+                } else {
+                    popup.$obj.find('.btn-remove').show()
+                }
                 popup.open();
                 return false;
             })
