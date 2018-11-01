@@ -634,12 +634,18 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 return false;
             })
             // add text options
-            .on('click', '.insert-action-text-body', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-action-text-body', (function(){ // #ARTICLE_MOD
+                var $place = adjustCaretBeforeInsertWidget(this);
+                $place.replaceWith('<blockquote><span>Enter Body Text</span></blockquote>')
+                that.hideOptionPopupV2();
                 return false;
-            })
-            .on('click', '.insert-action-text-quote', function(){ // #ARTICLE_MOD
+            }).bind(this))
+            .on('click', '.insert-action-text-quote', (function(){ // #ARTICLE_MOD
+                var $place = adjustCaretBeforeInsertWidget(this);
+                $place.replaceWith('<blockquote><span>Enter Quote Text</span></blockquote>')
+                that.hideOptionPopupV2();
                 return false;
-            })
+            }).bind(this))
             // add image options
             .on('click', '.insert-action-image-single', function(){ // #ARTICLE_MOD
                 that.hideOptionPopupV2();
@@ -1201,6 +1207,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
      */
 
     Core.prototype.toggleAddons = function () {
+        this.$el.find('.add_option_tools').toggle(); // #ARTICLE_MOD
         if (this.$el.find('.medium-insert-buttons').attr('data-active-addon') === 'images') {
             this.$el.find('.medium-insert-buttons').find('button[data-addon="images"]').click();
             return;
@@ -1208,7 +1215,6 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
 
         //this.$el.find('.medium-insert-buttons-addons').fadeToggle(); // #ARTICLE_MOD
         //this.$el.find('.medium-insert-buttons-show').toggleClass('medium-insert-buttons-rotate'); // #ARTICLE_MOD
-        this.$el.find('.add_option_tools').toggle(); // #ARTICLE_MOD
     };
 
     /**
@@ -2406,9 +2412,9 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 popup.$obj.find('textarea').val(caption);
                 popup.$obj.data('original', caption);
                 if (caption) {
-                    popup.$obj.find('.btn-remove').hide()
-                } else {
                     popup.$obj.find('.btn-remove').show()
+                } else {
+                    popup.$obj.find('.btn-remove').hide()
                 }
                 popup.open();
                 return false;
@@ -2693,7 +2699,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
         if (this.options.preview && data.context) {
             domImage = this.getDOMImage();
-            domImage.onload = (function () {
+            $(domImage).one('load', (function () {
                 var attr;
                 if (isGrid) {
                     attr = 'data-src'
@@ -2707,10 +2713,14 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 }
 
                 that.core.triggerInput();
-            }).bind(this);
+            }).bind(this));
             if (isGrid) {
                 domImage.src = window.blankUrl;
                 $(domImage).css('background-image', 'url(' + img + ')');
+                if (img.indexOf('data:') === -1) {
+                    $(domImage).attr('data-src', img);
+                }
+                $(domImage).load();
             } else {
                 domImage.src = img;
             }

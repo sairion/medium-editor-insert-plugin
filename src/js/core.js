@@ -494,12 +494,18 @@
                 return false;
             })
             // add text options
-            .on('click', '.insert-action-text-body', function(){ // #ARTICLE_MOD
+            .on('click', '.insert-action-text-body', (function(){ // #ARTICLE_MOD
+                var $place = adjustCaretBeforeInsertWidget(this);
+                $place.replaceWith('<blockquote><span>Enter Body Text</span></blockquote>')
+                that.hideOptionPopupV2();
                 return false;
-            })
-            .on('click', '.insert-action-text-quote', function(){ // #ARTICLE_MOD
+            }).bind(this))
+            .on('click', '.insert-action-text-quote', (function(){ // #ARTICLE_MOD
+                var $place = adjustCaretBeforeInsertWidget(this);
+                $place.replaceWith('<blockquote><span>Enter Quote Text</span></blockquote>')
+                that.hideOptionPopupV2();
                 return false;
-            })
+            }).bind(this))
             // add image options
             .on('click', '.insert-action-image-single', function(){ // #ARTICLE_MOD
                 that.hideOptionPopupV2();
@@ -1061,6 +1067,7 @@
      */
 
     Core.prototype.toggleAddons = function () {
+        this.$el.find('.add_option_tools').toggle(); // #ARTICLE_MOD
         if (this.$el.find('.medium-insert-buttons').attr('data-active-addon') === 'images') {
             this.$el.find('.medium-insert-buttons').find('button[data-addon="images"]').click();
             return;
@@ -1068,7 +1075,6 @@
 
         //this.$el.find('.medium-insert-buttons-addons').fadeToggle(); // #ARTICLE_MOD
         //this.$el.find('.medium-insert-buttons-show').toggleClass('medium-insert-buttons-rotate'); // #ARTICLE_MOD
-        this.$el.find('.add_option_tools').toggle(); // #ARTICLE_MOD
     };
 
     /**

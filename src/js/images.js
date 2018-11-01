@@ -294,9 +294,9 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 popup.$obj.find('textarea').val(caption);
                 popup.$obj.data('original', caption);
                 if (caption) {
-                    popup.$obj.find('.btn-remove').hide()
-                } else {
                     popup.$obj.find('.btn-remove').show()
+                } else {
+                    popup.$obj.find('.btn-remove').hide()
                 }
                 popup.open();
                 return false;
@@ -581,7 +581,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
         if (this.options.preview && data.context) {
             domImage = this.getDOMImage();
-            domImage.onload = (function () {
+            $(domImage).one('load', (function () {
                 var attr;
                 if (isGrid) {
                     attr = 'data-src'
@@ -595,10 +595,14 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 }
 
                 that.core.triggerInput();
-            }).bind(this);
+            }).bind(this));
             if (isGrid) {
                 domImage.src = window.blankUrl;
                 $(domImage).css('background-image', 'url(' + img + ')');
+                if (img.indexOf('data:') === -1) {
+                    $(domImage).attr('data-src', img);
+                }
+                $(domImage).load();
             } else {
                 domImage.src = img;
             }
