@@ -542,7 +542,14 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             return $place;
         }
 
-        
+        function checkSelectionActive() {
+            if (that.$el.find('> .medium-insert-active').length === 0) {
+                var $anchorNode = $(document.getSelection().anchorNode)
+                if ($anchorNode.is('.description.more > *')) {
+                    $anchorNode.addClass('medium-insert-active');
+                }
+            }
+        }
 
         this.$el
             .on('dragover drop', function (e) {
@@ -550,10 +557,17 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             })
             .on('keyup click focusout', $.proxy(this, 'toggleButtons'))
             .on('selectstart mousedown', '.medium-insert, .medium-insert-buttons', $.proxy(this, 'disableSelection'))
+            .on('click', '> p', function() {
+                checkSelectionActive();
+            })
             .on('click', '.medium-insert-buttons-show', $.proxy(this, 'toggleAddons'))
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
             .on('click', '.gallery-insert-action', (function(){ // #ARTICLE_MOD
+                checkSelectionActive();
                 var $place = adjustCaretBeforeInsertWidget(this);
+                if (!$place.get(0)) {
+                    return;
+                }
                 window.gallery.uploadImages(function(nextImages) {
                     if (nextImages === false) {
                         alert('Failed to upload images, please try again'); return;
@@ -636,13 +650,17 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             // add text options
             .on('click', '.insert-action-text-body', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
-                $place.replaceWith('<blockquote><span>Enter Body Text</span></blockquote>')
+                var $el = $('<p class="medium-insert-active">Enter Body Text</p>')
+                $place.replaceWith($el);
+                this.moveCaret($el, $el.text().length);
                 that.hideOptionPopupV2();
                 return false;
             }).bind(this))
             .on('click', '.insert-action-text-quote', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
-                $place.replaceWith('<blockquote><span>Enter Quote Text</span></blockquote>')
+                var $el = $('<blockquote class="medium-insert-active">Enter Quote Text</blockquote>')
+                $place.replaceWith($el);
+                this.moveCaret($el, $el.text().length);
                 that.hideOptionPopupV2();
                 return false;
             }).bind(this))
@@ -788,6 +806,12 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
         }
 
         $(window).on('resize', $.proxy(this, 'positionButtons', null));
+
+        // editor custom events
+        // var editor = this.getEditor();
+        // editor.subscribe('editableClick', function(a,b,c){
+        //     console.log('asdf')
+        // })
     };
 
     /**
