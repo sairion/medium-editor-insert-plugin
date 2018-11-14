@@ -377,8 +377,8 @@
     }
 
     Core.prototype.hideOptionPopupV2 = function hideOptionPopupV2() {
-        $('.add_option_tools').hide();
-        $('.add_option_tools .insert-product, .add_option_tools .insert-text, .add_option_tools .insert-image').hide();
+        $('.medium-insert-buttons .add_option_tools').hide();
+        $('.medium-insert-buttons .add_option_tools .insert-product, .medium-insert-buttons .add_option_tools .insert-text, .medium-insert-buttons .add_option_tools .insert-image').hide();
         $('.add_option .insert-option').show();
     }
 
@@ -420,7 +420,19 @@
             .on('click', '> p', function() {
                 checkSelectionActive();
             })
-            .on('click', '.medium-insert-buttons-show', $.proxy(this, 'toggleAddons'))
+            .on('click', '.medium-insert-buttons-show', function(e) {
+                var isVisible = $('.medium-insert-buttons .add_option_tools').is(':visible')
+                that.toggleAddons.call(that, e);
+                if (!isVisible) {
+                    setTimeout(function() {
+                        var mediumEditor = that.getEditor();
+                        var tb = mediumEditor.getExtensionByName('toolbar');
+                        if (tb && tb.isDisplayed()) {
+                            tb.hideToolbar();
+                        }
+                    }, 50)
+                }
+            })
             .on('click', '.medium-insert-action', $.proxy(this, 'addonAction'))
             .on('click', '.gallery-insert-action', (function(){ // #ARTICLE_MOD
                 checkSelectionActive();
@@ -467,7 +479,9 @@
                 }
             }).bind(this))
             .on('click', '.medium-insert-buttons .trick', (function(e) { // #ARTICLE_MOD
-                this.$el.find('.add_option_tools').hide();
+                if (!window.isWhitelabelV2) {
+                    this.$el.find('.add_option_tools').hide();
+                }
             }).bind(this))
             .on('paste', '.medium-insert-caption-placeholder', function (e) {
                 $.proxy(that, 'removeCaptionPlaceholder')($(e.target));
@@ -518,9 +532,9 @@
             }).bind(this))
             .on('click', '.insert-action-text-quote', (function(){ // #ARTICLE_MOD
                 var $place = adjustCaretBeforeInsertWidget(this);
-                var $el = $('<blockquote class="medium-insert-active">Enter Quote Text</blockquote>')
+                var $el = $('<blockquote class="medium-insert-active"><span>Enter Quote Text</span></blockquote>')
                 $place.replaceWith($el);
-                this.moveCaret($el, $el.text().length);
+                this.moveCaret($el.find('span'), $el.find('span').text().length);
                 that.hideOptionPopupV2();
                 return false;
             }).bind(this))
@@ -659,6 +673,12 @@
             .on('click', '.product .delete-slideshow', function(){
                 $(this).closest('.product').remove();
             });
+            $(document.body).on('click', function(e) {
+                if ($('.medium-insert-buttons .add_option_tools:visible').length !== 0 && 
+                    $(e.target).closest('.add_option_tools, .show_option').length === 0) {
+                    that.hideOptionPopupV2();
+                }
+            })
             /*
             Whitelabel V2 Stuff END
             */
@@ -1091,12 +1111,13 @@
      */
 
     Core.prototype.toggleAddons = function () {
-        this.$el.find('.add_option_tools').toggle(); // #ARTICLE_MOD
+        var $tools = this.$el.find('.add_option_tools');
+        $tools.toggle(); // #ARTICLE_MOD
+        var isVisible = $tools.is(':visible')
         if (this.$el.find('.medium-insert-buttons').attr('data-active-addon') === 'images') {
             this.$el.find('.medium-insert-buttons').find('button[data-addon="images"]').click();
             return;
         }
-
         //this.$el.find('.medium-insert-buttons-addons').fadeToggle(); // #ARTICLE_MOD
         //this.$el.find('.medium-insert-buttons-show').toggleClass('medium-insert-buttons-rotate'); // #ARTICLE_MOD
     };

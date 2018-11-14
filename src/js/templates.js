@@ -95,6 +95,10 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-progressbar.hbs"] = H
     return "<progress min=\"0\" max=\"100\" value=\"0\">0</progress>";
 },"useData":true});
 
+this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar-gear.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<div class=\"medium-insert-images-toolbar medium-editor-toolbar medium-toolbar-arrow-under medium-editor-toolbar-active\">\n    <label class=\"label\">IMAGE STYLE</label>\n    <div class=\"editable_tools\">\n        <a class=\"edit_full\">Full</a>\n        <a class=\"edit_normal\">Normal</a>\n    </div>\n</div>\n";
+},"useData":true});
+
 this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<div class=\"medium-insert-images-toolbar medium-editor-toolbar medium-toolbar-arrow-under medium-editor-toolbar-active\">\n    <div class=\"editable_tools\">\n        <a class=\"edit_full\">Full</a>\n        <a class=\"edit_normal\">Normal</a>\n        <a class=\"edit_with_quote\">With Quote</a>\n    </div>\n</div>\n";
 },"useData":true});

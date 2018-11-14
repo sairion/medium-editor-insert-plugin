@@ -726,8 +726,14 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
         if (this.$currentImage == null) {
             return;
         }
-        var $el = $(e.target),
-            $image = this.$el.find('.medium-insert-image-active');
+        var $el;
+        if (e) {
+            $el = $(e.target);
+        } else {
+            $el = this.$currentImage.parent();
+        }
+
+        var $image = this.$el.find('.medium-insert-image-active');
 
         if ($el.is(this.$currentImage)) {
             return;
@@ -864,7 +870,8 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
         var $fig = $image.closest('figure');
 
-        var $tpl = this.templates['src/js/templates/images-toolbar.hbs']({
+        var templateName = window.isWhitelabelV2 ? 'src/js/templates/images-toolbar-gear.hbs' :  'src/js/templates/images-toolbar.hbs';
+        var $tpl = this.templates[templateName]({
             styles: this.options.styles,
             actions: this.options.actions,
         }).trim();
@@ -890,6 +897,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
         }
 
         this.repositionToolbars();
+        this.core.getEditor().getExtensionByName('toolbar').hideToolbar();
 
         $toolbar.fadeIn();
         $toolbar2.fadeIn();
@@ -897,7 +905,6 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
     Images.prototype.autoRepositionToolbars = function () {
         setTimeout(function () {
-            this.repositionToolbars();
             this.repositionToolbars();
         }.bind(this), 0);
     };
