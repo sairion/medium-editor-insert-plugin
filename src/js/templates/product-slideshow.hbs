@@ -5,7 +5,7 @@
       <% items.forEach(function(item) { %>
       <li class="itemSlideElement" data-id="<%= item.id %>">
         <div class="figure-item">
-          <figure><a href="<%= item.html_url %>?utm=article"><span
+          <figure><a href="<% if (item.html_url) { %><%= item.html_url %><% } else { %>/sales/<%= item.id %>?utm=article<% } %>?utm=article"><span
                 class="back"></span><img class="figure" src="/_ui/images/common/blank.gif" style="background-image: url(<%= item.image %>);"></a>
           </figure>
           <figcaption>

@@ -106,9 +106,15 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-grid-each.hbs"] = Han
     + alias4(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
     + "\" alt=\"\" class=\"\" style=\"background-image:url('"
     + alias4(((helper = (helper = helpers.img || (depth0 != null ? depth0.img : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"img","hash":{},"data":data}) : helper)))
-    + "');\">\n    <a href=\"#\" class=\"remove\">Remove</a>\n    <a href=\"#\" class=\"btn-caption\">Add Caption</a>\n    <figcaption contenteditable=\"true\" class=\"text-placeholder\" data-placeholder=\"Type an image caption\"></figcaption>\n"
+    + "');\">\n    <a href=\"#\" class=\"remove\">Remove</a>\n    <a href=\"#\" class=\"btn-caption\">Add Caption</a>\n    <figcaption contenteditable=\"true\" class=\"text-placeholder\" data-placeholder=\"Type an image caption\">"
+    + alias4(((helper = (helper = helpers.caption || (depth0 != null ? depth0.caption : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"caption","hash":{},"data":data}) : helper)))
+    + "</figcaption>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.progress : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "</div>\n";
+},"useData":true});
+
+this["MediumInsert"]["Templates"]["src/js/templates/images-grid-popup.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<small contenteditable=\"false\" class=\"add_option_tools _grid\" style=\"display:none;\">\n    <a data-action=\"add\">Add images</a>\n    <a data-action=\"organize\">Organize images</a>\n    <a data-action=\"delete\">Delete Grid</a>\n</small>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/images-image.hbs"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
@@ -136,11 +142,11 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <b class=\"price\"><%= item.price %></b>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Grid</a>\n  </small>\n</ul>\n";
+    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <% if (item.retail_price != null) { %>\n      <b class=\"price sales\">$<%= item.price %> <small class=\"before\">$<%= item.retail_price %></small></b>\n      <% } else { %>\n      <b class=\"price\">$<%= item.price %></b>\n      <% } %>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Grid</a>\n  </small>\n</ul>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"itemSlideElement\" data-id=\"<%= item.id %>\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<%= item.html_url %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Slideshow</a>\n  </small>\n</div>\n";
+    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"itemSlideElement\" data-id=\"<%= item.id %>\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<% if (item.html_url) { %><%= item.html_url %><% } else { %>/sales/<%= item.id %>?utm=article<% } %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Slideshow</a>\n  </small>\n</div>\n";
 },"useData":true});
 ;(function ($, window, document, undefined) {
 
@@ -584,15 +590,15 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 if (!$place.get(0)) {
                     return;
                 }
-                window.gallery.uploadImages(function(nextImages) {
+                window.GalleryControl.uploadImages(function(nextImages) {
                     if (nextImages === false) {
                         alert('Failed to upload images, please try again'); return;
                     } 
-                    window.gallery.renderTo($place, null, function() {
-                        window.gallery.instance.addImages(nextImages.filter(e => e));
+                    window.GalleryControl.renderTo($place, null, function(control) {
+                        control.instance.addImages(nextImages.filter(e => e));
                         that.hideOptionPopupV2();
                     });
-                })
+                });
             }).bind(this))
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
                 var input = window.prompt('Please put youtube address');
@@ -712,10 +718,10 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 that.hideOptionPopupV2();
                 return false;
             }).bind(this))
-            .on('mouseover', '.product', function() {
+            .on('mouseover', '.product, .medium-insert-images', function() {
                 $(this).find('.add_option_tools').show();
             })
-            .on('mouseout', '.product', function () {
+            .on('mouseout', '.product, .medium-insert-images', function () {
                 $(this).find('.add_option_tools').hide();
             })
             .on('click', '.product .figure-item.add input, .product .add-product', function(){ // #ARTICLE_MOD
@@ -782,7 +788,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 if (selectedItemIds == null) {
                     selectedItemIds = $(this).closest('.product').find('li').map(function(i, e) {
                         return $(e).data('id')
-                    }).toArray()
+                    }).toArray();
                 }
                 if (selectedItemIds.length <= 1) {
                     $(this).closest('.itemList').remove();
@@ -790,7 +796,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 } else {
                     var $li = $(this).closest('.itemListElement');
                     var removingId = $li.data('id');
-                    var next = $wrapper.data('selectedItemIds').filter(function(sid) { return sid !== removingId });
+                    var next = selectedItemIds.filter(function(sid) { return sid !== removingId });
                     $wrapper.data('selectedItemIds', next);
                     $li.remove();
                 }
@@ -813,6 +819,16 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     $wrapper.data('selectedItemIds', next);
                     $li.remove();
                 }
+            })
+            .on('click', '.itemList li.itemListElement .figure, .itemList li.itemListElement .figcaption', function(){
+                window.open('/sales/' + $(this).closest('.itemListElement').data('id'));
+            })
+            .on('click', '> p > a', function(){
+                that.getEditor().selectElement(this);
+                that.getEditor().getExtensionByName('toolbar').showAndUpdateToolbar();
+                setTimeout(function() {
+                    $('.medium-editor-action-anchor2').click();
+                }, 50)
             })
             .on('click', '.product .delete-slideshow', function(){
                 $(this).closest('.product').remove();
@@ -2390,6 +2406,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      */
 
     Images.prototype.events = function () {
+        var that = this;
         $(document)
             .on('click', $.proxy(this, 'unselectImage'))
             .on('keydown', $.proxy(this, 'removeImage'))
@@ -2468,6 +2485,44 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 popup.open();
                 return false;
             })
+            .on('click', '.medium-insert-images .add_option_tools._grid a', function() {
+                var action = $(this).data('action');
+                var $wrapper = $(this).closest('.medium-insert-images');
+                if (action === 'add') {
+                    window.GalleryControl.uploadImages(function(nextImages) {
+                        if (nextImages === false) {
+                            alert('Failed to upload images, please try again'); return;
+                        }
+                        // TODO
+                        nextImages.forEach(function (img) {
+                            var $img = $(that.templates['src/js/templates/images-grid-each.hbs']({
+                                img: img.image_url,
+                                progress: false,
+                                caption: '',
+                            }));
+                            $wrapper.find('figure').append($img);
+                        });
+                    })
+                } else if (action === 'organize') {
+                    var serialziedImages = $wrapper.find('.grid')
+                        .map(function(i, e) {
+                            return { id: i, url: $(e).find('img').data('src'), caption: $(e).find('figcaption').text() }
+                        }).toArray();
+                    organizeImageService.open(serialziedImages, function(organizedImages) {
+                        $wrapper.find('div.grid').remove()
+                        organizedImages.forEach(function(img) {
+                            var $img = $(that.templates['src/js/templates/images-grid-each.hbs']({
+                                img: img.url,
+                                progress: false,
+                                caption: img.caption,
+                            }));
+                            $wrapper.find('figure').append($img);
+                        });
+                    });
+                } else if (action === 'delete') {
+                    $wrapper.remove();
+                }
+            })
             .on('click', '.popup.insert_caption .btn-save', function() {
                 var popup = $.dialog('insert_caption');
                 var epochId = popup.$obj.data('workingImage');
@@ -2498,7 +2553,8 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 $wrapper.find('.btn-caption').text('Add Caption');
                 popup.close();
                 return false;
-            })
+            });
+
         this.$el
             .on('click', '.medium-insert-images img', $.proxy(this, 'selectImage'));
 
@@ -2778,7 +2834,8 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
             if (isGrid) {
                 expanded = $(this.templates['src/js/templates/images-grid-each.hbs']({
                     img: img,
-                    progress: this.options.preview
+                    progress: this.options.preview,
+                    caption: '',
                 }));
                 if ($place.find('figure').length === 0) {
                     $place.append('<figure />')
@@ -2818,6 +2875,10 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
                 if (this.options.styles.grid.added) {
                     this.options.styles.grid.added($place);
+                }
+                if ($place.find('.add_option_tools').length === 0) {
+                    var popup = this.templates['src/js/templates/images-grid-popup.hbs'];
+                    $place.find('figure').prepend(popup);
                 }
             }
 

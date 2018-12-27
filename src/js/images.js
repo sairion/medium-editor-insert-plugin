@@ -223,6 +223,7 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
      */
 
     Images.prototype.events = function () {
+        var that = this;
         $(document)
             .on('click', $.proxy(this, 'unselectImage'))
             .on('keydown', $.proxy(this, 'removeImage'))
@@ -301,6 +302,44 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 popup.open();
                 return false;
             })
+            .on('click', '.medium-insert-images .add_option_tools._grid a', function() {
+                var action = $(this).data('action');
+                var $wrapper = $(this).closest('.medium-insert-images');
+                if (action === 'add') {
+                    window.GalleryControl.uploadImages(function(nextImages) {
+                        if (nextImages === false) {
+                            alert('Failed to upload images, please try again'); return;
+                        }
+                        // TODO
+                        nextImages.forEach(function (img) {
+                            var $img = $(that.templates['src/js/templates/images-grid-each.hbs']({
+                                img: img.image_url,
+                                progress: false,
+                                caption: '',
+                            }));
+                            $wrapper.find('figure').append($img);
+                        });
+                    })
+                } else if (action === 'organize') {
+                    var serialziedImages = $wrapper.find('.grid')
+                        .map(function(i, e) {
+                            return { id: i, url: $(e).find('img').data('src'), caption: $(e).find('figcaption').text() }
+                        }).toArray();
+                    organizeImageService.open(serialziedImages, function(organizedImages) {
+                        $wrapper.find('div.grid').remove()
+                        organizedImages.forEach(function(img) {
+                            var $img = $(that.templates['src/js/templates/images-grid-each.hbs']({
+                                img: img.url,
+                                progress: false,
+                                caption: img.caption,
+                            }));
+                            $wrapper.find('figure').append($img);
+                        });
+                    });
+                } else if (action === 'delete') {
+                    $wrapper.remove();
+                }
+            })
             .on('click', '.popup.insert_caption .btn-save', function() {
                 var popup = $.dialog('insert_caption');
                 var epochId = popup.$obj.data('workingImage');
@@ -331,7 +370,8 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
                 $wrapper.find('.btn-caption').text('Add Caption');
                 popup.close();
                 return false;
-            })
+            });
+
         this.$el
             .on('click', '.medium-insert-images img', $.proxy(this, 'selectImage'));
 
@@ -611,7 +651,8 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
             if (isGrid) {
                 expanded = $(this.templates['src/js/templates/images-grid-each.hbs']({
                     img: img,
-                    progress: this.options.preview
+                    progress: this.options.preview,
+                    caption: '',
                 }));
                 if ($place.find('figure').length === 0) {
                     $place.append('<figure />')
@@ -651,6 +692,10 @@ var quotedPlaceHolderMsg = '“Start typing or paste article text...”';
 
                 if (this.options.styles.grid.added) {
                     this.options.styles.grid.added($place);
+                }
+                if ($place.find('.add_option_tools').length === 0) {
+                    var popup = this.templates['src/js/templates/images-grid-popup.hbs'];
+                    $place.find('figure').prepend(popup);
                 }
             }
 

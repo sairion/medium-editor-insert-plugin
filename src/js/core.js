@@ -440,15 +440,15 @@
                 if (!$place.get(0)) {
                     return;
                 }
-                window.gallery.uploadImages(function(nextImages) {
+                window.GalleryControl.uploadImages(function(nextImages) {
                     if (nextImages === false) {
                         alert('Failed to upload images, please try again'); return;
                     } 
-                    window.gallery.renderTo($place, null, function() {
-                        window.gallery.instance.addImages(nextImages.filter(e => e));
+                    window.GalleryControl.renderTo($place, null, function(control) {
+                        control.instance.addImages(nextImages.filter(e => e));
                         that.hideOptionPopupV2();
                     });
-                })
+                });
             }).bind(this))
             .on('click', '.video-insert-action', (function(){ // #ARTICLE_MOD
                 var input = window.prompt('Please put youtube address');
@@ -568,10 +568,10 @@
                 that.hideOptionPopupV2();
                 return false;
             }).bind(this))
-            .on('mouseover', '.product', function() {
+            .on('mouseover', '.product, .medium-insert-images', function() {
                 $(this).find('.add_option_tools').show();
             })
-            .on('mouseout', '.product', function () {
+            .on('mouseout', '.product, .medium-insert-images', function () {
                 $(this).find('.add_option_tools').hide();
             })
             .on('click', '.product .figure-item.add input, .product .add-product', function(){ // #ARTICLE_MOD
@@ -638,7 +638,7 @@
                 if (selectedItemIds == null) {
                     selectedItemIds = $(this).closest('.product').find('li').map(function(i, e) {
                         return $(e).data('id')
-                    }).toArray()
+                    }).toArray();
                 }
                 if (selectedItemIds.length <= 1) {
                     $(this).closest('.itemList').remove();
@@ -646,7 +646,7 @@
                 } else {
                     var $li = $(this).closest('.itemListElement');
                     var removingId = $li.data('id');
-                    var next = $wrapper.data('selectedItemIds').filter(function(sid) { return sid !== removingId });
+                    var next = selectedItemIds.filter(function(sid) { return sid !== removingId });
                     $wrapper.data('selectedItemIds', next);
                     $li.remove();
                 }
@@ -669,6 +669,16 @@
                     $wrapper.data('selectedItemIds', next);
                     $li.remove();
                 }
+            })
+            .on('click', '.itemList li.itemListElement .figure, .itemList li.itemListElement .figcaption', function(){
+                window.open('/sales/' + $(this).closest('.itemListElement').data('id'));
+            })
+            .on('click', '> p > a', function(){
+                that.getEditor().selectElement(this);
+                that.getEditor().getExtensionByName('toolbar').showAndUpdateToolbar();
+                setTimeout(function() {
+                    $('.medium-editor-action-anchor2').click();
+                }, 50)
             })
             .on('click', '.product .delete-slideshow', function(){
                 $(this).closest('.product').remove();

@@ -6,7 +6,11 @@
     </span>
     <span class="figcaption">
       <span class="title"><%= item.title %></span>
-      <b class="price"><%= item.price %></b>
+      <% if (item.retail_price != null) { %>
+      <b class="price sales">$<%= item.price %> <small class="before">$<%= item.retail_price %></small></b>
+      <% } else { %>
+      <b class="price">$<%= item.price %></b>
+      <% } %>
     </span>
     <a class="remove">Remove</a>
   </li>
