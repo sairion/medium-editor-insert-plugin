@@ -142,11 +142,11 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <% if (item.retail_price != null) { %>\n      <b class=\"price sales\">$<%= item.price %> <small class=\"before\">$<%= item.retail_price %></small></b>\n      <% } else { %>\n      <b class=\"price\">$<%= item.price %></b>\n      <% } %>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Grid</a>\n  </small>\n</ul>\n";
+    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure <% if (item.image_fit_to_bounds) { %>fit<% } %>\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <% if (item.retail_price != null) { %>\n      <b class=\"price sales\">$<%= item.price %> <small class=\"before\">$<%= item.retail_price %></small></b>\n      <% } else { %>\n      <b class=\"price\">$<%= item.price %></b>\n      <% } %>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Grid</a>\n  </small>\n</ul>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ol class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"itemSlideElement\" data-id=\"<%= item.id %>\">\n        <div class=\"figure-item\">\n          <figure><a href=\"<% if (item.html_url) { %><%= item.html_url %><% } else { %>/sales/<%= item.id %>?utm=article<% } %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\"><button class=\"btn-cart nopopup soldout\"><em>$<%= item.price %></em></button></span><a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ol>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Slideshow</a>\n  </small>\n</div>\n";
+    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ul class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"itemSlideElement\" data-id=\"<%= item.id %>\">\n        <div class=\"figure-item\">\n          <figure <% if (item.image_fit_to_bounds) { %>class=\"fit\"<% } %>>\n            <a href=\"<% if (item.html_url) { %><%= item.html_url %><% } else { %>/sales/<%= item.id %>?utm=article<% } %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\">\n              <button class=\"btn-cart nopopup soldout\">\n                <% if (item.retail_price != null) { %><b class=\"price sales\">$<%= item.price %> <small class=\"before\">$<%= item.retail_price %></small></b><% } else { %><b class=\"price\">$<%= item.price %></b><% } %>\n              </button>\n            </span>\n            <a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ul>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Slideshow</a>\n  </small>\n</div>\n";
 },"useData":true});
 ;(function ($, window, document, undefined) {
 
@@ -724,6 +724,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             .on('mouseout', '.product, .medium-insert-images', function () {
                 $(this).find('.add_option_tools').hide();
             })
+            .on('click', '.product .figure-item.add', function(){ // #ARTICLE_MOD
+                $(this).find('input').click();
+            })
             .on('click', '.product .figure-item.add input, .product .add-product', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
                 if ($(this).closest('.product').hasClass('itemSlide')) {
@@ -744,43 +747,43 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 }, 50);
                 return false;
             })
-            .on('click', '.itemSlide .prev', function(){ // #ARTICLE_MOD
-                var $wrapper = $(this).closest('.product');
-                var len = $wrapper.find('li').length;
-                if (len <= 4) {
-                    return false;
-                }
-                var si = $wrapper.data('slide-index');
-                if (si == null) {
-                    si = 0;
-                    $wrapper.data('slide-index', 0);
-                }
-                if (si === 0) {
-                    return false;
-                }
-                $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si - 1) * -95.5) + '%)');
-                $wrapper.data('slide-index', si - 1);
-                return false;
-            })
-            .on('click', '.itemSlide .next', function(){ // #ARTICLE_MOD
-                var $wrapper = $(this).closest('.product');
-                var len = $wrapper.find('li').length;
-                if (len <= 4) {
-                    return false;
-                }
-                var si = $wrapper.data('slide-index');
-                if (si == null) {
-                    si = 0;
-                    $wrapper.data('slide-index', 0);
-                }
-                var max = Math.floor(len / 4);
-                if (si === max) {
-                    return false;
-                }
-                $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si + 1) * -95.5) + '%)');
-                $wrapper.data('slide-index', si + 1);
-                return false;
-            })
+            // .on('click', '.itemSlide .prev', function(){ // #ARTICLE_MOD
+            //     var $wrapper = $(this).closest('.product');
+            //     var len = $wrapper.find('li').length;
+            //     if (len <= 4) {
+            //         return false;
+            //     }
+            //     var si = $wrapper.data('slide-index');
+            //     if (si == null) {
+            //         si = 0;
+            //         $wrapper.data('slide-index', 0);
+            //     }
+            //     if (si === 0) {
+            //         return false;
+            //     }
+            //     $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si - 1) * -95.5) + '%)');
+            //     $wrapper.data('slide-index', si - 1);
+            //     return false;
+            // })
+            // .on('click', '.itemSlide .next', function(){ // #ARTICLE_MOD
+            //     var $wrapper = $(this).closest('.product');
+            //     var len = $wrapper.find('li').length;
+            //     if (len <= 4) {
+            //         return false;
+            //     }
+            //     var si = $wrapper.data('slide-index');
+            //     if (si == null) {
+            //         si = 0;
+            //         $wrapper.data('slide-index', 0);
+            //     }
+            //     var max = Math.floor(len / 4);
+            //     if (si === max) {
+            //         return false;
+            //     }
+            //     $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si + 1) * -95.5) + '%)');
+            //     $wrapper.data('slide-index', si + 1);
+            //     return false;
+            // })
             // product card
             .on('click', 'ul.itemList .itemListElement .remove', function(){
                 var $wrapper = $(this).closest('.product');

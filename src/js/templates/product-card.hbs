@@ -1,7 +1,7 @@
 <ul class="itemList product" contenteditable="false">
   <% items.forEach(function(item) { %>
   <li class="itemListElement" data-id="<%= item.id %>">
-    <span class="figure">
+    <span class="figure <% if (item.image_fit_to_bounds) { %>fit<% } %>">
       <img src="/_ui/images/common/blank.gif" style="background-image:url(<%= item.image %>)">
     </span>
     <span class="figcaption">

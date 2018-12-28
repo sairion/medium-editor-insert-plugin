@@ -574,6 +574,9 @@
             .on('mouseout', '.product, .medium-insert-images', function () {
                 $(this).find('.add_option_tools').hide();
             })
+            .on('click', '.product .figure-item.add', function(){ // #ARTICLE_MOD
+                $(this).find('input').click();
+            })
             .on('click', '.product .figure-item.add input, .product .add-product', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
                 if ($(this).closest('.product').hasClass('itemSlide')) {
@@ -594,43 +597,43 @@
                 }, 50);
                 return false;
             })
-            .on('click', '.itemSlide .prev', function(){ // #ARTICLE_MOD
-                var $wrapper = $(this).closest('.product');
-                var len = $wrapper.find('li').length;
-                if (len <= 4) {
-                    return false;
-                }
-                var si = $wrapper.data('slide-index');
-                if (si == null) {
-                    si = 0;
-                    $wrapper.data('slide-index', 0);
-                }
-                if (si === 0) {
-                    return false;
-                }
-                $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si - 1) * -95.5) + '%)');
-                $wrapper.data('slide-index', si - 1);
-                return false;
-            })
-            .on('click', '.itemSlide .next', function(){ // #ARTICLE_MOD
-                var $wrapper = $(this).closest('.product');
-                var len = $wrapper.find('li').length;
-                if (len <= 4) {
-                    return false;
-                }
-                var si = $wrapper.data('slide-index');
-                if (si == null) {
-                    si = 0;
-                    $wrapper.data('slide-index', 0);
-                }
-                var max = Math.floor(len / 4);
-                if (si === max) {
-                    return false;
-                }
-                $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si + 1) * -95.5) + '%)');
-                $wrapper.data('slide-index', si + 1);
-                return false;
-            })
+            // .on('click', '.itemSlide .prev', function(){ // #ARTICLE_MOD
+            //     var $wrapper = $(this).closest('.product');
+            //     var len = $wrapper.find('li').length;
+            //     if (len <= 4) {
+            //         return false;
+            //     }
+            //     var si = $wrapper.data('slide-index');
+            //     if (si == null) {
+            //         si = 0;
+            //         $wrapper.data('slide-index', 0);
+            //     }
+            //     if (si === 0) {
+            //         return false;
+            //     }
+            //     $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si - 1) * -95.5) + '%)');
+            //     $wrapper.data('slide-index', si - 1);
+            //     return false;
+            // })
+            // .on('click', '.itemSlide .next', function(){ // #ARTICLE_MOD
+            //     var $wrapper = $(this).closest('.product');
+            //     var len = $wrapper.find('li').length;
+            //     if (len <= 4) {
+            //         return false;
+            //     }
+            //     var si = $wrapper.data('slide-index');
+            //     if (si == null) {
+            //         si = 0;
+            //         $wrapper.data('slide-index', 0);
+            //     }
+            //     var max = Math.floor(len / 4);
+            //     if (si === max) {
+            //         return false;
+            //     }
+            //     $wrapper.find('.itemSlideWrap').css('transform', 'translateX(' + String((si + 1) * -95.5) + '%)');
+            //     $wrapper.data('slide-index', si + 1);
+            //     return false;
+            // })
             // product card
             .on('click', 'ul.itemList .itemListElement .remove', function(){
                 var $wrapper = $(this).closest('.product');
