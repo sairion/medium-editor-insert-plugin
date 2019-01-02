@@ -307,9 +307,9 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             var searchedTemplate = _.template($insertProductDialog.find('#popup-tpl-searched').html())
             var $searched = $insertProductDialog.find('.suggest');
             var $selected = $insertProductDialog.find('.featured');
-            // Sortable.create($selected.find('ul').get(0), {
-            //     handle: '.btn-move',
-            // });
+            Sortable.create($selected.find('ul').get(0), {
+                handle: '.btn-move',
+            });
             
             $insertProductDialog
                 .data('productCardTemplate', productCardTemplate)
@@ -561,6 +561,25 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             }
         }
 
+        function handleProductIdForSlide(origArray) {
+            var arr = [];
+            var arr2 = [];
+            var separatorPassed = false
+            origArray.forEach(function(e) {
+              if (e === "SEP") {
+                separatorPassed = true
+                return
+              } else {
+                if (separatorPassed) {
+                  arr.push(e)
+                } else {
+                  arr2.push(e)
+                }
+              }
+            })
+            return arr.concat(arr2)
+        }
+
         this.$el
             .on('dragover drop', function (e) {
                 e.preventDefault();
@@ -740,11 +759,24 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     var selectedItemIds = $that.closest('.product').data('selectedItemIds');
                     if (selectedItemIds == null) {
                         selectedItemIds = $that.closest('.product').find('li').map(function(i, e) {
-                            return $(e).data('id');
+                            return $(e).data('id') || 'SEP';
                         }).toArray();
+                        selectedItemIds = handleProductIdForSlide(selectedItemIds);
+                        // rearrange the id that might shuffled by slide algo
+                        $that.closest('.product').data('selectedItemIds', selectedItemIds)
                     }
                     $.dialog('insert_product').$obj.data('setSaved')($that.closest('.product'), selectedItemIds);
                 }, 50);
+                return false;
+            })
+            .one('click.initializeSlide', '.itemSlide .prev, .itemSlide .next', function(){
+                var $this = $(this);
+                var $slide = $this.closest('.product');
+                $slide.find('.itemSlide .prev, .itemSlide .next').off('click.initializeSlide');
+                $slide.productSlide({ itemPerSlide: 4, center: true })
+                setTimeout(function() {
+                    $this.click();
+                }, 500);
                 return false;
             })
             // .on('click', '.itemSlide .prev', function(){ // #ARTICLE_MOD
