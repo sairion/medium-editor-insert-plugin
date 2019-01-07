@@ -1,9 +1,8 @@
 <div class="itemSlide product" contenteditable="false">
   <div class="itemSlideWrap">
     <ul class="stream after">
-      <li><div class="figure-item add"><input type="file"></div></li>
-      <% items.forEach(function(item) { %>
-      <li class="itemSlideElement" data-id="<%= item.id %>">
+      <% items.forEach(function(item, idx) { %>
+      <li class="itemSlideElement" data-id="<%= item.id %>" data-idx="<%= idx %>">
         <div class="figure-item">
           <figure <% if (item.image_fit_to_bounds) { %>class="fit"<% } %>>
             <a href="<% if (item.html_url) { %><%= item.html_url %><% } else { %>/sales/<%= item.id %>?utm=article<% } %>?utm=article"><span

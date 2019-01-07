@@ -215,9 +215,8 @@
                     $(this).trigger('keyup');
                 });
             $('.popup.insert_product .btn-save').on('click', function () {
-                var items = $selected.find('li')
-                    .map(function(i, e){ return $(e).attr('data-sid'); }).toArray()
-                    .map(function(sid){ return ThingCache[sid]; });
+                var ids = $selected.find('li').map(function(i, e){ return Number($(e).attr('data-sid') || 0); }).toArray();
+                var items = ids.map(function(sid){ return ThingCache[sid]; });
                 // select template and feed context
                 var type = $insertProductDialog.data('type');
                 var tpl; 
@@ -227,7 +226,7 @@
                     tpl = productSlideshowTemplate;
                 }
                 var $el = $(tpl({ items: items }));
-                $el.data('selectedItemIds', _.clone(ref.selectedItemIds));
+                $el.data('selectedItemIds', _.clone(ids));
 
                 var updatingRoot = $(this).data('updatingRoot');
                 // slideshow update mode
@@ -414,16 +413,17 @@
         function handleProductIdForSlide(origArray) {
             var arr = [];
             var arr2 = [];
-            var separatorPassed = false
+            var separatorPassed = false;
+            debugger;
             origArray.forEach(function(e) {
               if (e === "SEP") {
                 separatorPassed = true
                 return
               } else {
                 if (separatorPassed) {
-                  arr.push(e)
+                  arr.push(e);
                 } else {
-                  arr2.push(e)
+                  arr2.push(e);
                 }
               }
             })
@@ -598,9 +598,11 @@
             })
             .on('click', '.product .figure-item.add input, .product .add-product', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
-                if ($(this).closest('.product').hasClass('itemSlide')) {
+                var isSlide = $(this).closest('.product').hasClass('itemSlide');
+                var isList = $(this).closest('.product').hasClass('itemSlide');
+                if (isSlide) {
                     $.dialog('insert_product').$obj.data('type', 'slideshow')
-                } else if ($(this).closest('.product').hasClass('itemList')) {
+                } else if (isList) {
                     $.dialog('insert_product').$obj.data('type', 'card')
                 }
                 // give time for reset
@@ -609,11 +611,13 @@
                     var selectedItemIds = $that.closest('.product').data('selectedItemIds');
                     if (selectedItemIds == null) {
                         selectedItemIds = $that.closest('.product').find('li').map(function(i, e) {
-                            return $(e).data('id') || 'SEP';
+                            return $(e).data('id');
                         }).toArray();
-                        selectedItemIds = handleProductIdForSlide(selectedItemIds);
+                        if (isSlide) {
+                            selectedItemIds = handleProductIdForSlide(selectedItemIds);
+                        }
                         // rearrange the id that might shuffled by slide algo
-                        $that.closest('.product').data('selectedItemIds', selectedItemIds)
+                        // $that.closest('.product').data('selectedItemIds', selectedItemIds)
                     }
                     $.dialog('insert_product').$obj.data('setSaved')($that.closest('.product'), selectedItemIds);
                 }, 50);

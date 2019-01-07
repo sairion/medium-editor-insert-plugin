@@ -146,7 +146,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handleb
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ul class=\"stream after\">\n      <li><div class=\"figure-item add\"><input type=\"file\"></div></li>\n      <% items.forEach(function(item) { %>\n      <li class=\"itemSlideElement\" data-id=\"<%= item.id %>\">\n        <div class=\"figure-item\">\n          <figure <% if (item.image_fit_to_bounds) { %>class=\"fit\"<% } %>>\n            <a href=\"<% if (item.html_url) { %><%= item.html_url %><% } else { %>/sales/<%= item.id %>?utm=article<% } %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\">\n              <button class=\"btn-cart nopopup soldout\">\n                <% if (item.retail_price != null) { %><b class=\"price sales\">$<%= item.price %> <small class=\"before\">$<%= item.retail_price %></small></b><% } else { %><b class=\"price\">$<%= item.price %></b><% } %>\n              </button>\n            </span>\n            <a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ul>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Slideshow</a>\n  </small>\n</div>\n";
+    return "<div class=\"itemSlide product\" contenteditable=\"false\">\n  <div class=\"itemSlideWrap\">\n    <ul class=\"stream after\">\n      <% items.forEach(function(item, idx) { %>\n      <li class=\"itemSlideElement\" data-id=\"<%= item.id %>\" data-idx=\"<%= idx %>\">\n        <div class=\"figure-item\">\n          <figure <% if (item.image_fit_to_bounds) { %>class=\"fit\"<% } %>>\n            <a href=\"<% if (item.html_url) { %><%= item.html_url %><% } else { %>/sales/<%= item.id %>?utm=article<% } %>?utm=article\"><span\n                class=\"back\"></span><img class=\"figure\" src=\"/_ui/images/common/blank.gif\" style=\"background-image: url(<%= item.image %>);\"></a>\n          </figure>\n          <figcaption>\n            <span class=\"show_cart\">\n              <button class=\"btn-cart nopopup soldout\">\n                <% if (item.retail_price != null) { %><b class=\"price sales\">$<%= item.price %> <small class=\"before\">$<%= item.retail_price %></small></b><% } else { %><b class=\"price\">$<%= item.price %></b><% } %>\n              </button>\n            </span>\n            <a href=\"<%= item.html_url %>?utm=article\" class=\"title\"><%= item.title %></a>\n          </figcaption>\n          <a class=\"delete\"></a>\n        </div>\n      </li>\n      <% }); %>\n    </ul>\n  </div>\n  <a href=\"#\" class=\"prev\">Prev</a>\n  <a href=\"#\" class=\"next\">Next</a>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Slideshow</a>\n  </small>\n</div>\n";
 },"useData":true});
 ;(function ($, window, document, undefined) {
 
@@ -365,9 +365,8 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     $(this).trigger('keyup');
                 });
             $('.popup.insert_product .btn-save').on('click', function () {
-                var items = $selected.find('li')
-                    .map(function(i, e){ return $(e).attr('data-sid'); }).toArray()
-                    .map(function(sid){ return ThingCache[sid]; });
+                var ids = $selected.find('li').map(function(i, e){ return Number($(e).attr('data-sid') || 0); }).toArray();
+                var items = ids.map(function(sid){ return ThingCache[sid]; });
                 // select template and feed context
                 var type = $insertProductDialog.data('type');
                 var tpl; 
@@ -377,7 +376,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     tpl = productSlideshowTemplate;
                 }
                 var $el = $(tpl({ items: items }));
-                $el.data('selectedItemIds', _.clone(ref.selectedItemIds));
+                $el.data('selectedItemIds', _.clone(ids));
 
                 var updatingRoot = $(this).data('updatingRoot');
                 // slideshow update mode
@@ -564,16 +563,17 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
         function handleProductIdForSlide(origArray) {
             var arr = [];
             var arr2 = [];
-            var separatorPassed = false
+            var separatorPassed = false;
+            debugger;
             origArray.forEach(function(e) {
               if (e === "SEP") {
                 separatorPassed = true
                 return
               } else {
                 if (separatorPassed) {
-                  arr.push(e)
+                  arr.push(e);
                 } else {
-                  arr2.push(e)
+                  arr2.push(e);
                 }
               }
             })
@@ -748,9 +748,11 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             })
             .on('click', '.product .figure-item.add input, .product .add-product', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
-                if ($(this).closest('.product').hasClass('itemSlide')) {
+                var isSlide = $(this).closest('.product').hasClass('itemSlide');
+                var isList = $(this).closest('.product').hasClass('itemSlide');
+                if (isSlide) {
                     $.dialog('insert_product').$obj.data('type', 'slideshow')
-                } else if ($(this).closest('.product').hasClass('itemList')) {
+                } else if (isList) {
                     $.dialog('insert_product').$obj.data('type', 'card')
                 }
                 // give time for reset
@@ -759,11 +761,13 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     var selectedItemIds = $that.closest('.product').data('selectedItemIds');
                     if (selectedItemIds == null) {
                         selectedItemIds = $that.closest('.product').find('li').map(function(i, e) {
-                            return $(e).data('id') || 'SEP';
+                            return $(e).data('id');
                         }).toArray();
-                        selectedItemIds = handleProductIdForSlide(selectedItemIds);
+                        if (isSlide) {
+                            selectedItemIds = handleProductIdForSlide(selectedItemIds);
+                        }
                         // rearrange the id that might shuffled by slide algo
-                        $that.closest('.product').data('selectedItemIds', selectedItemIds)
+                        // $that.closest('.product').data('selectedItemIds', selectedItemIds)
                     }
                     $.dialog('insert_product').$obj.data('setSaved')($that.closest('.product'), selectedItemIds);
                 }, 50);
