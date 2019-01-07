@@ -278,7 +278,7 @@
                 if (_selectedItemIds.length > 0) {
                     // copy contents
                     ref.selectedItemIds = _selectedItemIds;
-                    _selectedItemIds.forEach(function(sid) {
+                    __F.FancyUtils.jQueryPromiseAll(_selectedItemIds.map(function(sid) {
                         var promise = $.Deferred();
                         if (ThingCache[sid]) {
                             promise.resolve(ThingCache[sid]);
@@ -319,10 +319,12 @@
                                     });
                                 });
                         }
-                        promise.then(function(thing) {
+                        return promise
+                    })).then(function(args) {
+                        args.forEach(function(thing) {
                             $selected.find('ul').append(selectedTemplate(thing));
-                        })
-                    });
+                        });
+                    })
                     $selected.show();
                     var cnt = _selectedItemIds.length;
                     $insertProductDialog.find('.btn-save')
@@ -408,26 +410,6 @@
                     $anchorNode.addClass('medium-insert-active');
                 }
             }
-        }
-
-        function handleProductIdForSlide(origArray) {
-            var arr = [];
-            var arr2 = [];
-            var separatorPassed = false;
-            debugger;
-            origArray.forEach(function(e) {
-              if (e === "SEP") {
-                separatorPassed = true
-                return
-              } else {
-                if (separatorPassed) {
-                  arr.push(e);
-                } else {
-                  arr2.push(e);
-                }
-              }
-            })
-            return arr.concat(arr2)
         }
 
         this.$el
@@ -599,7 +581,7 @@
             .on('click', '.product .figure-item.add input, .product .add-product', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
                 var isSlide = $(this).closest('.product').hasClass('itemSlide');
-                var isList = $(this).closest('.product').hasClass('itemSlide');
+                var isList = $(this).closest('.product').hasClass('itemList');
                 if (isSlide) {
                     $.dialog('insert_product').$obj.data('type', 'slideshow')
                 } else if (isList) {
@@ -608,17 +590,14 @@
                 // give time for reset
                 var $that = $(this);
                 setTimeout(function(){
-                    var selectedItemIds = $that.closest('.product').data('selectedItemIds');
-                    if (selectedItemIds == null) {
-                        selectedItemIds = $that.closest('.product').find('li').map(function(i, e) {
-                            return $(e).data('id');
-                        }).toArray();
-                        if (isSlide) {
-                            selectedItemIds = handleProductIdForSlide(selectedItemIds);
-                        }
-                        // rearrange the id that might shuffled by slide algo
-                        // $that.closest('.product').data('selectedItemIds', selectedItemIds)
-                    }
+                    var selectedItemIds = $that.closest('.product').find('li').toArray()
+                    .sort(function(a, b) {
+                        return $(a).data('idx') - $(b).data('idx');
+                    }).map(function(e) {
+                        return $(e).data('id');
+                    });
+                    // rearrange the id that might shuffled by slide algo
+                    $that.closest('.product').data('selectedItemIds', selectedItemIds);
                     $.dialog('insert_product').$obj.data('setSaved')($that.closest('.product'), selectedItemIds);
                 }, 50);
                 return false;

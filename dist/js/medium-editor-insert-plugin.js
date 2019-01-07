@@ -142,7 +142,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/images-toolbar.hbs"] = Handl
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-card.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\">\n    <span class=\"figure <% if (item.image_fit_to_bounds) { %>fit<% } %>\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <% if (item.retail_price != null) { %>\n      <b class=\"price sales\">$<%= item.price %> <small class=\"before\">$<%= item.retail_price %></small></b>\n      <% } else { %>\n      <b class=\"price\">$<%= item.price %></b>\n      <% } %>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Grid</a>\n  </small>\n</ul>\n";
+    return "<ul class=\"itemList product\" contenteditable=\"false\">\n  <% items.forEach(function(item, idx) { %>\n  <li class=\"itemListElement\" data-id=\"<%= item.id %>\" data-idx=\"<%= idx %>\">\n    <span class=\"figure <% if (item.image_fit_to_bounds) { %>fit<% } %>\">\n      <img src=\"/_ui/images/common/blank.gif\" style=\"background-image:url(<%= item.image %>)\">\n    </span>\n    <span class=\"figcaption\">\n      <span class=\"title\"><%= item.title %></span>\n      <% if (item.retail_price != null) { %>\n      <b class=\"price sales\">$<%= item.price %> <small class=\"before\">$<%= item.retail_price %></small></b>\n      <% } else { %>\n      <b class=\"price\">$<%= item.price %></b>\n      <% } %>\n    </span>\n    <a class=\"remove\">Remove</a>\n  </li>\n  <% }); %>\n  <small class=\"add_option_tools\" style=\"display:none;\">\n    <a class=\"add-product\">Add Products</a>\n    <a class=\"delete-slideshow\">Delete Grid</a>\n  </small>\n</ul>\n";
 },"useData":true});
 
 this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -428,7 +428,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 if (_selectedItemIds.length > 0) {
                     // copy contents
                     ref.selectedItemIds = _selectedItemIds;
-                    _selectedItemIds.forEach(function(sid) {
+                    __F.FancyUtils.jQueryPromiseAll(_selectedItemIds.map(function(sid) {
                         var promise = $.Deferred();
                         if (ThingCache[sid]) {
                             promise.resolve(ThingCache[sid]);
@@ -469,10 +469,12 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                                     });
                                 });
                         }
-                        promise.then(function(thing) {
+                        return promise
+                    })).then(function(args) {
+                        args.forEach(function(thing) {
                             $selected.find('ul').append(selectedTemplate(thing));
-                        })
-                    });
+                        });
+                    })
                     $selected.show();
                     var cnt = _selectedItemIds.length;
                     $insertProductDialog.find('.btn-save')
@@ -558,26 +560,6 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                     $anchorNode.addClass('medium-insert-active');
                 }
             }
-        }
-
-        function handleProductIdForSlide(origArray) {
-            var arr = [];
-            var arr2 = [];
-            var separatorPassed = false;
-            debugger;
-            origArray.forEach(function(e) {
-              if (e === "SEP") {
-                separatorPassed = true
-                return
-              } else {
-                if (separatorPassed) {
-                  arr.push(e);
-                } else {
-                  arr2.push(e);
-                }
-              }
-            })
-            return arr.concat(arr2)
         }
 
         this.$el
@@ -749,7 +731,7 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
             .on('click', '.product .figure-item.add input, .product .add-product', function(){ // #ARTICLE_MOD
                 $.dialog('insert_product').open();
                 var isSlide = $(this).closest('.product').hasClass('itemSlide');
-                var isList = $(this).closest('.product').hasClass('itemSlide');
+                var isList = $(this).closest('.product').hasClass('itemList');
                 if (isSlide) {
                     $.dialog('insert_product').$obj.data('type', 'slideshow')
                 } else if (isList) {
@@ -758,17 +740,14 @@ this["MediumInsert"]["Templates"]["src/js/templates/product-slideshow.hbs"] = Ha
                 // give time for reset
                 var $that = $(this);
                 setTimeout(function(){
-                    var selectedItemIds = $that.closest('.product').data('selectedItemIds');
-                    if (selectedItemIds == null) {
-                        selectedItemIds = $that.closest('.product').find('li').map(function(i, e) {
-                            return $(e).data('id');
-                        }).toArray();
-                        if (isSlide) {
-                            selectedItemIds = handleProductIdForSlide(selectedItemIds);
-                        }
-                        // rearrange the id that might shuffled by slide algo
-                        // $that.closest('.product').data('selectedItemIds', selectedItemIds)
-                    }
+                    var selectedItemIds = $that.closest('.product').find('li').toArray()
+                    .sort(function(a, b) {
+                        return $(a).data('idx') - $(b).data('idx');
+                    }).map(function(e) {
+                        return $(e).data('id');
+                    });
+                    // rearrange the id that might shuffled by slide algo
+                    $that.closest('.product').data('selectedItemIds', selectedItemIds);
                     $.dialog('insert_product').$obj.data('setSaved')($that.closest('.product'), selectedItemIds);
                 }, 50);
                 return false;

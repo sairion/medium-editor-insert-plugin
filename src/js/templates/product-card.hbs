@@ -1,6 +1,6 @@
 <ul class="itemList product" contenteditable="false">
-  <% items.forEach(function(item) { %>
-  <li class="itemListElement" data-id="<%= item.id %>">
+  <% items.forEach(function(item, idx) { %>
+  <li class="itemListElement" data-id="<%= item.id %>" data-idx="<%= idx %>">
     <span class="figure <% if (item.image_fit_to_bounds) { %>fit<% } %>">
       <img src="/_ui/images/common/blank.gif" style="background-image:url(<%= item.image %>)">
     </span>
